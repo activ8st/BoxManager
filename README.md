@@ -39,7 +39,7 @@ dotnet restore
 Compilazione ed Esecuzione:
 Bash
 dotnet run
-Accesso: L'applicazione sarà disponibile di default su https://localhost:5001 o http://localhost:5000.
+Accesso: L'applicazione sarà disponibile di default su https://localhost:5001 o http://localhost:5000.Dovesse essere un altro link, sarebbbe sempre localhost perche   ASP.NET Core assegna spesso porte casuali nel file Properties/launchSettings.json per evitare conflitti con altre applicazioni
 Nota: Il database SQLite (BoxManager.db ) viene generato e popolato automaticamente con dati di test al primo avvio tramite la classe DbInitializer.
 
 
@@ -51,4 +51,4 @@ Nota: Il database SQLite (BoxManager.db ) viene generato e popolato automaticame
 /Hubs: Configurazione SignalR per la comunicazione bidirezionale.
 /wwwroot: Asset statici (CSS, JS, immagini)
 
-Presentato da Silvia Busti e Niki Hammond.
+### Presentato da  Niki Hammond & Silvia Busti.
