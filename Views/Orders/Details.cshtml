@@ -1,0 +1,164 @@
+@model BoxManager.Models.Order
+@{
+    ViewData["Title"] = "Dettaglio Ordine #" + Model.Id;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a asp-action="Index">Ordini</a></li>
+                <li class="breadcrumb-item active">Dettaglio #@Model.Id</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold mb-0">Ordine #@Model.Id - @Model.BoxCode</h2>
+    </div>
+    <div class="btn-group">
+        <button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer me-2"></i>Stampa Scheda</button>
+        <a asp-action="Index" class="btn btn-primary">Torna alla lista</a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Colonna Sinistra: Dati Cliente e Stato -->
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white fw-bold">Dati Cliente</div>
+            <div class="card-body">
+                <h5 class="fw-bold text-primary">@Model.Customer.BusinessName</h5>
+                <p class="mb-1"><i class="bi bi-geo-alt me-2"></i>@Model.Customer.Address</p>
+                <p class="mb-1"><i class="bi bi-envelope me-2"></i>@Model.Customer.Email</p>
+                <p class="mb-0"><i class="bi bi-person me-2"></i>@Model.Customer.ContactPerson (@Model.Customer.Phone)</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white fw-bold">Stato Avanzamento</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Stato Attuale</label>
+                    <div class="d-flex align-items-center">
+                        <span class="badge rounded-pill p-2 px-3 @(Model.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (Model.Status == BoxManager.Models.OrderStatus.InProduction ? "bg-info" : "bg-warning text-dark"))">
+                            @Model.Status
+                        </span>
+                    </div>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    @{
+                        var progress = Model.Status switch {
+                            BoxManager.Models.OrderStatus.Pending => 25,
+                            BoxManager.Models.OrderStatus.InProduction => 50,
+                            BoxManager.Models.OrderStatus.Completed => 75,
+                            BoxManager.Models.OrderStatus.Delivered => 100,
+                            _ => 0
+                        };
+                    }
+                    <div class="progress-bar" role="progressbar" style="width: @progress%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Colonna Destra: Scheda Tecnica -->
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">SCHEDA TECNICA DI PRODUZIONE</h5>
+                <span class="badge bg-secondary">FEFCO @Model.TechnicalSheet.FefcoCode</span>
+            </div>
+            <div class="card-body border">
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h6 class="text-uppercase fw-bold border-bottom pb-2 mb-3">1. Caratteristiche Strutturali</h6>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="p-2 bg-light rounded">
+                                    <small class="text-muted d-block">Lunghezza (L)</small>
+                                    <span class="h5 fw-bold">@Model.TechnicalSheet.Length mm</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 bg-light rounded">
+                                    <small class="text-muted d-block">Larghezza (W)</small>
+                                    <span class="h5 fw-bold">@Model.TechnicalSheet.Width mm</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 bg-light rounded">
+                                    <small class="text-muted d-block">Altezza (H)</small>
+                                    <span class="h5 fw-bold">@Model.TechnicalSheet.Height mm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p><strong>Tipo Cartone:</strong> @Model.TechnicalSheet.CardboardType</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Onda:</strong> @Model.TechnicalSheet.WaveType</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h6 class="text-uppercase fw-bold border-bottom pb-2 mb-3">2. Specifiche di Stampa</h6>
+                        @if (Model.TechnicalSheet.HasPrinting)
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p><strong>Tipo:</strong> @Model.TechnicalSheet.PrintingType</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Colori:</strong> @Model.TechnicalSheet.ColorCount</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Finiture:</strong> @(Model.TechnicalSheet.SpecialFinishes ?? "Standard")</p>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted italic">Nessuna stampa richiesta per questo ordine.</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6 class="text-uppercase fw-bold border-bottom pb-2 mb-3">3. Riepilogo Economico</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Quantità</th>
+                                        <th>Prezzo Unitario</th>
+                                        <th>Sconto</th>
+                                        <th class="text-end">Totale Ordine</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@Model.Quantity pz</td>
+                                        <td>€ @Model.TechnicalSheet.UnitPrice.ToString("N2")</td>
+                                        <td>@Model.TechnicalSheet.Discount %</td>
+                                        <td class="text-end fw-bold h5 text-primary">€ @Model.TotalPrice.ToString("N2")</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .btn-group, nav, header, footer { display: none !important; }
+        .card { border: 1px solid #000 !important; box-shadow: none !important; }
+        body { background: white !important; }
+    }
+</style>

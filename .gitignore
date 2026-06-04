@@ -1,0 +1,27 @@
+## Visual Studio / .NET
+.vs/
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Rider
+.idea/
+
+# NuGet
+*.nupkg
+project.lock.json
+packages/
+
+# IIS Express
+/.vs/*/applicationhost.config
+
+# Build output
+/bin/
+/obj/
+
+# Publish output
+/publish/

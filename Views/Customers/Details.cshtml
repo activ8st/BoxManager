@@ -1,0 +1,82 @@
+@model BoxManager.Models.Customer
+@{
+    ViewData["Title"] = "Scheda Cliente";
+}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-action="Index">Clienti</a></li>
+    <li class="breadcrumb-item active" aria-current="page">@Model.BusinessName</li>
+  </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Informazioni Cliente</h5>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+            </div>
+            <div class="card-body">
+                <p><strong>Ragione Sociale:</strong><br />@Model.BusinessName</p>
+                <p><strong>P.IVA:</strong><br />@Model.VatNumber</p>
+                <p><strong>Indirizzo:</strong><br />@Model.Address</p>
+                <p><strong>Email:</strong><br />@Model.Email</p>
+                <p><strong>Telefono:</strong><br />@Model.Phone</p>
+                <p><strong>Referente:</strong><br />@Model.ContactPerson</p>
+                <p><strong>Note:</strong><br />@(string.IsNullOrEmpty(Model.Notes) ? "Nessuna nota" : Model.Notes)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">Storico Ordini</h5>
+                <a asp-controller="Orders" asp-action="Create" asp-route-customerId="@Model.Id" class="btn btn-sm btn-primary">+ Nuovo Ordine</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Codice</th>
+                                <th>Quantità</th>
+                                <th>Stato</th>
+                                <th>Totale</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.Orders.OrderByDescending(o => o.OrderDate))
+                            {
+                                <tr>
+                                    <td>#@order.Id</td>
+                                    <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@order.BoxCode</td>
+                                    <td>@order.Quantity</td>
+                                    <td>
+                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (order.Status == BoxManager.Models.OrderStatus.InProduction ? "bg-info" : "bg-warning text-dark"))">
+                                            @order.Status
+                                        </span>
+                                    </td>
+                                    <td>€ @order.TotalPrice.ToString("N2")</td>
+                                    <td>
+                                        <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-link">Dettagli</a>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.Orders.Any())
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted">Nessun ordine trovato per questo cliente.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,124 @@
+@model BoxManager.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm card-stat h-100">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small">Ordini Totali</h6>
+                <h3 class="fw-bold mb-0">@Model.TotalOrders</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm card-stat h-100 border-success" style="border-left-color: #198754 !important;">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small">Clienti Attivi</h6>
+                <h3 class="fw-bold mb-0">@Model.ActiveCustomers</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm card-stat h-100 border-warning" style="border-left-color: #ffc107 !important;">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small">Fatturato Stimato</h6>
+                <h3 class="fw-bold mb-0">€ @Model.EstimatedRevenue.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm card-stat h-100 border-info" style="border-left-color: #0dcaf0 !important;">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small">In Produzione</h6>
+                <h3 class="fw-bold mb-0">@Model.OrdersInProduction</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="dashboardApp">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">Ultimi Ordini</h5>
+                <a asp-controller="Orders" asp-action="Index" class="btn btn-sm btn-outline-primary">Vedi tutti</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Data</th>
+                                <th>Cliente</th>
+                                <th>Codice</th>
+                                <th>Stato</th>
+                                <th>Totale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@order.Customer.BusinessName</td>
+                                    <td>@order.BoxCode</td>
+                                    <td>
+                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (order.Status == BoxManager.Models.OrderStatus.InProduction ? "bg-info" : (order.Status == BoxManager.Models.OrderStatus.Delivered ? "bg-secondary" : "bg-warning text-dark")))">
+                                            @order.Status
+                                        </span>
+                                    </td>
+                                    <td>€ @order.TotalPrice.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">Ricerca Rapida Clienti</h5>
+                <a asp-controller="Customers" asp-action="Create" class="btn btn-sm btn-primary">+ Nuovo</a>
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Cerca cliente..." v-model="searchQuery" v-on:keyup.enter="searchCustomers">
+                    <button class="btn btn-outline-secondary" type="button" v-on:click="searchCustomers"><i class="bi bi-search"></i></button>
+                </div>
+                <div class="list-group list-group-flush">
+                    @foreach (var customer in Model.Customers)
+                    {
+                        <a asp-controller="Customers" asp-action="Details" asp-route-id="@customer.Id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            @customer.BusinessName
+                            <i class="bi bi-chevron-right small text-muted"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    searchQuery: ''
+                }
+            },
+            methods: {
+                searchCustomers() {
+                    if (this.searchQuery.trim()) {
+                        window.location.href = `/Customers?searchString=${encodeURIComponent(this.searchQuery)}`;
+                    }
+                }
+            }
+        }).mount('#dashboardApp');
+    </script>
+}

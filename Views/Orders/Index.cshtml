@@ -1,0 +1,101 @@
+@model IEnumerable<BoxManager.Models.Order>
+@{
+    ViewData["Title"] = "Gestione Ordini";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Gestione Ordini</h2>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Nuovo Ordine</a>
+</div>
+
+<div class="card shadow-sm" id="ordersApp">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Cerca per codice scatola o cliente..." value="@ViewData["CurrentFilter"]">
+                <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search me-2"></i>Cerca</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Cliente</th>
+                        <th>Codice</th>
+                        <th>Quantità</th>
+                        <th>Stato</th>
+                        <th>Totale</th>
+                        <th class="text-end">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="order-row-@item.Id">
+                            <td>#@item.Id</td>
+                            <td>@item.OrderDate.ToString("dd/MM/yyyy")</td>
+                            <td class="fw-bold">@item.Customer.BusinessName</td>
+                            <td>@item.BoxCode</td>
+                            <td>@item.Quantity</td>
+                            <td>
+                                <select class="form-select form-select-sm status-selector" 
+                                        data-order-id="@item.Id"
+                                        onchange="updateOrderStatus(@item.Id, this.value)">
+                                    @foreach (var status in Enum.GetValues(typeof(BoxManager.Models.OrderStatus)))
+                                    {
+                                        <!option value="@status" @(item.Status.ToString() == status.ToString() ? "selected" : "")>@status</!option>
+                                    }
+                                </select>
+                            </td>
+                            <td>€ @item.TotalPrice.ToString("N2")</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Dettagli"><i class="bi bi-file-earmark-text"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/orderHub")
+            .build();
+
+        connection.on("ReceiveStatusUpdate", function (orderId, newStatus) {
+            const selector = document.querySelector(`.status-selector[data-order-id="${orderId}"]`);
+            if (selector) {
+                selector.value = newStatus;
+                selector.classList.add('is-valid');
+                setTimeout(() => selector.classList.remove('is-valid'), 2000);
+            }
+        });
+
+        connection.on("ReceiveNewOrder", function (orderId) {
+            // Potrebbe essere implementato un toast o ricaricare la pagina
+            console.log("Nuovo ordine ricevuto: " + orderId);
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        function updateOrderStatus(orderId, status) {
+            fetch(`/Orders/UpdateStatus`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${orderId}&status=${status}`
+            }).then(response => {
+                if (response.ok) {
+                    console.log("Status aggiornato");
+                }
+            });
+        }
+    </script>
+}
