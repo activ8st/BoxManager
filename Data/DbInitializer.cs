@@ -76,6 +76,8 @@ namespace BoxManager.Data
                     FefcoCode = o.BoxCode.StartsWith("Fefco") ? o.BoxCode.Replace("Fefco ", "0") : "0201",
                     HasPrinting = (i % 2 == 0),
                     ColorCount = (i % 2 == 0) ? 2 : 0,
+                    ColorCodes = (i % 2 == 0) ? "#000000, #FFFFFF" : null,
+                    PrintingNotes = (i % 2 == 0) ? "Stampa fronte/retro, controllo cromia in fase di prova." : null,
                     CustomerLogoPath = "",
                     PrintingType = (i % 2 == 0) ? "Flexo" : "N/A",
                     UnitPrice = o.TotalPrice / o.Quantity,

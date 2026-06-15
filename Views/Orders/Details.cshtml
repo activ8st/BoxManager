@@ -21,8 +21,30 @@
             <div class="d-flex gap-2 align-items-center">
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary me-2"><i class="bi bi-pencil me-1"></i>Modifica</a>
-                    <button id="startProductionBtn" class="btn btn-primary" onclick="updateStatus('InProduction')">Avvia Produzione »</button>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)" class="btn btn-outline-secondary me-2"><i class="bi bi-pencil me-1"></i>Modifica</a>
+                    string? actionText = null;
+                    BoxManager.Models.OrderStatus? actionStatus = null;
+
+                    if (Model.Status == BoxManager.Models.OrderStatus.Pending)
+                    {
+                        actionText = "Avvia Produzione »";
+                        actionStatus = BoxManager.Models.OrderStatus.InProduction;
+                    }
+                    else if (Model.Status == BoxManager.Models.OrderStatus.InProduction)
+                    {
+                        actionText = "Completa »";
+                        actionStatus = BoxManager.Models.OrderStatus.Completed;
+                    }
+                    else if (Model.Status == BoxManager.Models.OrderStatus.Completed)
+                    {
+                        actionText = "Conferma Consegna »";
+                        actionStatus = BoxManager.Models.OrderStatus.Delivered;
+                    }
+
+                    @if (actionText != null && actionStatus.HasValue)
+                    {
+                        <button id="startProductionBtn" class="btn btn-primary" onclick="updateStatus('@actionStatus')">@actionText</button>
+                    }
                 }
             </div>
         </div>
@@ -96,30 +118,6 @@
             </div>
         </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white fw-bold">Stato Avanzamento</div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label class="form-label small text-muted">Stato attuale</label>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge rounded-pill p-2 px-3 @(Model.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (Model.Status == BoxManager.Models.OrderStatus.InProduction || Model.Status == BoxManager.Models.OrderStatus.Pending ? "badge-gray" : "bg-warning text-dark"))">@Model.Status</span>
-                        <small class="text-muted">@Model.OrderDate.ToString("dd/MM/yyyy")</small>
-                    </div>
-                </div>
-                <div class="progress" style="height: 10px;">
-                    @{
-                        var progress = Model.Status switch {
-                            BoxManager.Models.OrderStatus.Pending => 25,
-                            BoxManager.Models.OrderStatus.InProduction => 50,
-                            BoxManager.Models.OrderStatus.Completed => 75,
-                            BoxManager.Models.OrderStatus.Delivered => 100,
-                            _ => 0
-                        };
-                    }
-                    <div class="progress-bar" role="progressbar" style="width: @progress%;"></div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="col-lg-8">
@@ -170,26 +168,66 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-white fw-bold">Stampa</div>
                     <div class="card-body">
-                        @if (sheet != null && sheet.HasPrinting)
+                        @if (sheet != null)
                         {
                             <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <p class="small text-muted mb-1">Tipo</p>
+                                <div class="col-md-3 mb-3">
+                                    <p class="small text-muted mb-1">Stampa</p>
+                                    <div class="fw-bold">@(sheet.HasPrinting ? "Sì" : "No")</div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <p class="small text-muted mb-1">Tipologia</p>
                                     <div class="fw-bold">@(sheet?.PrintingType ?? "-")</div>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <p class="small text-muted mb-1">Colori</p>
                                     <div class="fw-bold">@(sheet?.ColorCount ?? 0)</div>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <p class="small text-muted mb-1">Finiture</p>
-                                    <div class="fw-bold">@(sheet?.SpecialFinishes ?? "Standard")</div>
+                                    <div class="fw-bold">@(sheet?.SpecialFinishes ?? "-")</div>
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(sheet?.ColorCodes))
+                            {
+                                var codes = sheet.ColorCodes.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(c => c.Trim())
+                                    .Where(c => c.Length > 0)
+                                    .ToArray();
+                                if (codes.Length > 0)
+                                {
+                                    <div class="mb-3">
+                                        <p class="small text-muted mb-1">Palette colori</p>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @foreach (var code in codes)
+                                            {
+                                                <span class="color-swatch" title="@code" style="background:@code"></span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <p class="small text-muted mb-1">Logo Cliente</p>
+                                    @if (!string.IsNullOrWhiteSpace(sheet?.CustomerLogoPath))
+                                    {
+                                        <img src="@sheet.CustomerLogoPath" alt="Logo cliente" class="img-fluid rounded border" style="max-height: 140px;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted">Nessun logo caricato</div>
+                                    }
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <p class="small text-muted mb-1">Note Stampa</p>
+                                    <div class="fw-normal">@(string.IsNullOrWhiteSpace(sheet?.PrintingNotes) ? "Nessuna nota" : sheet.PrintingNotes)</div>
                                 </div>
                             </div>
                         }
                         else
                         {
-                            <p class="text-muted fst-italic">Nessuna stampa richiesta per questo ordine.</p>
+                            <p class="text-muted fst-italic">Scheda tecnica non disponibile per questo ordine.</p>
                         }
                     </div>
                 </div>
@@ -233,6 +271,7 @@
     .stepper ul li { text-align:center; }
     .stepper .circle { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; border:1px solid #ced4da; background:#fff; color:#6c757d; }
     .stepper .circle.active { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+    .color-swatch { width: 28px; height: 28px; border-radius: 50%; display: inline-block; border: 1px solid #ced4da; }
 
     @@media print {
         .btn-group, nav, header, footer { display: none !important; }

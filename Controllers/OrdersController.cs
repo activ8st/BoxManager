@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using BoxManager.Data;
 using BoxManager.Models;
@@ -7,6 +8,7 @@ using BoxManager.Hubs;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using System.IO;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoxManager.Controllers
@@ -21,6 +23,19 @@ namespace BoxManager.Controllers
         {
             _context = context;
             _hubContext = hubContext;
+        }
+
+        private static void NormalizeTechnicalSheet(TechnicalSheet sheet)
+        {
+            if (!sheet.HasPrinting)
+            {
+                sheet.ColorCount = 0;
+                sheet.PrintingType = string.Empty;
+                sheet.SpecialFinishes = string.Empty;
+                sheet.PrintingNotes = string.Empty;
+                sheet.ColorCodes = string.Empty;
+                sheet.CustomerLogoPath = string.Empty;
+            }
         }
 
         public async Task<IActionResult> Index(string searchString, string statusFilter)
@@ -98,18 +113,184 @@ namespace BoxManager.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(Order order, TechnicalSheet sheet)
+        public async Task<IActionResult> Create(Order order, TechnicalSheet sheet, IFormFile? CustomerLogo)
         {
             order.OrderDate = DateTime.Now;
             _context.Add(order);
             await _context.SaveChangesAsync();
 
+            if (CustomerLogo != null && CustomerLogo.Length > 0)
+            {
+                var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "logos");
+                if (!Directory.Exists(uploadsPath))
+                {
+                    Directory.CreateDirectory(uploadsPath);
+                }
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(CustomerLogo.FileName)}";
+                var filePath = Path.Combine(uploadsPath, fileName);
+                await using var stream = new FileStream(filePath, FileMode.Create);
+                await CustomerLogo.CopyToAsync(stream);
+                sheet.CustomerLogoPath = $"/uploads/logos/{fileName}";
+            }
+
             sheet.OrderId = order.Id;
+            NormalizeTechnicalSheet(sheet);
             _context.Add(sheet);
             await _context.SaveChangesAsync();
 
             await _hubContext.Clients.All.SendAsync("ReceiveNewOrder", order.Id);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = order.Id });
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int? id, string? returnUrl)
+        {
+            if (id == null) return NotFound();
+            var order = await _context.Orders
+                .Include(o => o.TechnicalSheet)
+                .Include(o => o.Customer)
+                .FirstOrDefaultAsync(o => o.Id == id);
+            if (order == null) return NotFound();
+
+            ViewBag.Customers = await _context.Customers.ToListAsync();
+            var referer = Request.Headers["Referer"].ToString();
+            ViewBag.ReturnUrl = returnUrl ?? referer;
+            return View(order);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, Order order, IFormFile? CustomerLogo, string? returnUrl)
+        {
+            if (id != order.Id) return NotFound();
+
+            var existingOrder = await _context.Orders
+                .Include(o => o.TechnicalSheet)
+                .FirstOrDefaultAsync(o => o.Id == id);
+            if (existingOrder == null) return NotFound();
+
+            // Remove validation errors for navigation properties that aren't bound by the form
+            ModelState.Remove("Customer");
+            ModelState.Remove("TechnicalSheet");
+            ModelState.Remove("TechnicalSheet.Order");
+            if (ModelState.ContainsKey("TechnicalSheet.Id"))
+            {
+                ModelState.Remove("TechnicalSheet.Id");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // Debug: log model state errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    System.Diagnostics.Debug.WriteLine($"ModelState Error: {error.ErrorMessage}");
+                }
+                
+                ViewBag.Customers = await _context.Customers.ToListAsync();
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.ModelErrors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return View(order);
+            }
+
+            existingOrder.BoxCode = order.BoxCode;
+            existingOrder.Quantity = order.Quantity;
+            existingOrder.CustomerId = order.CustomerId;
+            existingOrder.OrderDate = order.OrderDate;
+
+            var submittedSheet = order.TechnicalSheet;
+            if (submittedSheet == null)
+            {
+                submittedSheet = existingOrder.TechnicalSheet;
+            }
+
+            if (submittedSheet != null)
+            {
+                NormalizeTechnicalSheet(submittedSheet);
+            }
+
+            if (existingOrder.TechnicalSheet == null)
+            {
+                if (submittedSheet != null)
+                {
+                    submittedSheet.OrderId = existingOrder.Id;
+                    NormalizeTechnicalSheet(submittedSheet);
+                    existingOrder.TechnicalSheet = submittedSheet;
+                    _context.Add(submittedSheet);
+                }
+            }
+            else if (submittedSheet != null)
+            {
+                var existingSheet = existingOrder.TechnicalSheet;
+                existingSheet.Length = submittedSheet.Length;
+                existingSheet.Width = submittedSheet.Width;
+                existingSheet.Height = submittedSheet.Height;
+                existingSheet.CardboardType = submittedSheet.CardboardType;
+                existingSheet.WaveType = submittedSheet.WaveType;
+                existingSheet.FefcoCode = submittedSheet.FefcoCode;
+                existingSheet.HasPrinting = submittedSheet.HasPrinting;
+                existingSheet.UnitPrice = submittedSheet.UnitPrice;
+                existingSheet.Discount = submittedSheet.Discount;
+
+                if (submittedSheet.HasPrinting)
+                {
+                    existingSheet.ColorCount = submittedSheet.ColorCount;
+                    existingSheet.PrintingType = submittedSheet.PrintingType;
+                    existingSheet.SpecialFinishes = submittedSheet.SpecialFinishes;
+                    existingSheet.PrintingNotes = submittedSheet.PrintingNotes;
+                    existingSheet.ColorCodes = submittedSheet.ColorCodes;
+
+                    if (!string.IsNullOrEmpty(submittedSheet.CustomerLogoPath))
+                    {
+                        existingSheet.CustomerLogoPath = submittedSheet.CustomerLogoPath;
+                    }
+                    else if (string.IsNullOrEmpty(existingSheet.CustomerLogoPath))
+                    {
+                        existingSheet.CustomerLogoPath = string.Empty;
+                    }
+                }
+                else
+                {
+                    existingSheet.ColorCount = 0;
+                    existingSheet.PrintingType = string.Empty;
+                    existingSheet.SpecialFinishes = string.Empty;
+                    existingSheet.PrintingNotes = string.Empty;
+                    existingSheet.ColorCodes = string.Empty;
+                    existingSheet.CustomerLogoPath = string.Empty;
+                }
+            }
+
+            if (submittedSheet != null)
+            {
+                var calculatedTotal = submittedSheet.UnitPrice * existingOrder.Quantity * (1 - (submittedSheet.Discount / 100));
+                existingOrder.TotalPrice = Math.Round(calculatedTotal, 2);
+            }
+
+            if (CustomerLogo != null && CustomerLogo.Length > 0)
+            {
+                var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "logos");
+                if (!Directory.Exists(uploadsPath))
+                {
+                    Directory.CreateDirectory(uploadsPath);
+                }
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(CustomerLogo.FileName)}";
+                var filePath = Path.Combine(uploadsPath, fileName);
+                await using var stream = new FileStream(filePath, FileMode.Create);
+                await CustomerLogo.CopyToAsync(stream);
+
+                if (existingOrder.TechnicalSheet != null)
+                {
+                    existingOrder.TechnicalSheet.CustomerLogoPath = $"/uploads/logos/{fileName}";
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Redirect to Details after save (simple and reliable UX)
+            return RedirectToAction(nameof(Details), new { id = existingOrder.Id });
         }
 
         [HttpPost]

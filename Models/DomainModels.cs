@@ -9,9 +9,9 @@ namespace BoxManager.Models
     {
         [Display(Name = "In attesa")]
         Pending,
-        [Display(Name = "In corso")]
+        [Display(Name = "In produzione")]
         InProduction,
-        [Display(Name = "Pronto")]
+        [Display(Name = "Completato")]
         Completed,
         [Display(Name = "Consegnato")]
         Delivered,
@@ -85,13 +85,17 @@ namespace BoxManager.Models
         [Display(Name = "Presenza Stampa")]
         public bool HasPrinting { get; set; }
         [Display(Name = "Numero Colori")]
-        public int ColorCount { get; set; }
+        public int? ColorCount { get; set; }
         [Display(Name = "Logo Cliente")]
         public string? CustomerLogoPath { get; set; }
         [Display(Name = "Tipologia Stampa")]
-        public string? PrintingType { get; set; } // offset/flexo
+        public string? PrintingType { get; set; } // offset/flexo/digitale
         [Display(Name = "Finiture Speciali")]
         public string? SpecialFinishes { get; set; }
+        [Display(Name = "Note Stampa")]
+        public string? PrintingNotes { get; set; }
+        [Display(Name = "Codici Colori")]
+        public string? ColorCodes { get; set; }
 
         // Aspetti economici
         [Required, Column(TypeName = "decimal(18,2)"), Display(Name = "Prezzo Unitario")]

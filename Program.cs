@@ -51,6 +51,25 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         context.Database.EnsureCreated();
+
+        try
+        {
+            context.Database.ExecuteSqlRaw("ALTER TABLE TechnicalSheets ADD COLUMN ColorCodes TEXT");
+        }
+        catch
+        {
+            // Column already exists or cannot be added; ignore.
+        }
+
+        try
+        {
+            context.Database.ExecuteSqlRaw("ALTER TABLE TechnicalSheets ADD COLUMN PrintingNotes TEXT");
+        }
+        catch
+        {
+            // Column already exists or cannot be added; ignore.
+        }
+
         DbInitializer.Initialize(context);
     }
     catch (Exception ex)

@@ -32,18 +32,18 @@
         <!-- Dashboard Riassuntiva Cliente -->
         <div class="row g-3 mb-4">
             <div class="col-xl-4 col-md-6">
-                <div class="card bg-primary text-white border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                <div class="card bg-light text-dark border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div style="z-index: 1; position: relative;">
-                                <h6 class="text-white-50 mb-1 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Totale Speso</h6>
+                                <h6 class="text-dark-50 mb-1 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Totale Speso</h6>
                                 <h3 class="mb-0 fw-bold">€ @Model.Orders.Where(o => o.Status == BoxManager.Models.OrderStatus.Completed || o.Status == BoxManager.Models.OrderStatus.Delivered).Sum(o => o.TotalPrice).ToString("N2")</h3>
                             </div>
                             <div class="p-2 bg-white bg-opacity-25 rounded-3" style="z-index: 1; position: relative;">
                                 <i class="bi bi-wallet2 fs-5"></i>
                             </div>
                         </div>
-                        <p class="mb-0 text-white-50 small" style="z-index: 1; position: relative;"><i class="bi bi-check-circle me-1"></i>Ordini completati</p>
+                        <p class="mb-0 text-dark-50 small" style="z-index: 1; position: relative;"><i class="bi bi-check-circle me-1"></i>Ordini completati</p>
                     </div>
                     <div class="position-absolute" style="bottom: -15px; right: -15px; opacity: 0.15; transform: scale(2.5); z-index: 0;">
                         <i class="bi bi-wallet2"></i>
@@ -52,7 +52,7 @@
             </div>
             
             <div class="col-xl-4 col-md-6">
-                <div class="card bg-warning text-dark border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                <div class="card bg-light text-dark border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div style="z-index: 1; position: relative;">
@@ -72,18 +72,18 @@
             </div>
             
             <div class="col-xl-4 col-md-12">
-                <div class="card bg-success text-white border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
+                <div class="card bg-light text-dark border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div style="z-index: 1; position: relative;">
-                                <h6 class="text-white-50 mb-1 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Totale Ordini</h6>
+                                <h6 class="text-dark-50 mb-1 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">Totale Ordini</h6>
                                 <h3 class="mb-0 fw-bold">@Model.Orders.Count()</h3>
                             </div>
                             <div class="p-2 bg-white bg-opacity-25 rounded-3" style="z-index: 1; position: relative;">
                                 <i class="bi bi-graph-up-arrow fs-5"></i>
                             </div>
                         </div>
-                        <p class="mb-0 text-white-50 small" style="z-index: 1; position: relative;"><i class="bi bi-activity me-1"></i>Volume complessivo</p>
+                        <p class="mb-0 text-dark-50 small" style="z-index: 1; position: relative;"><i class="bi bi-activity me-1"></i>Volume complessivo</p>
                     </div>
                     <div class="position-absolute" style="bottom: -15px; right: -15px; opacity: 0.15; transform: scale(2.5); z-index: 0;">
                         <i class="bi bi-graph-up-arrow"></i>
@@ -120,8 +120,16 @@
                                     <td>@order.BoxCode</td>
                                     <td>@order.Quantity</td>
                                     <td>
-                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (order.Status == BoxManager.Models.OrderStatus.InProduction || order.Status == BoxManager.Models.OrderStatus.Pending ? "badge-gray" : "bg-warning text-dark"))">
-                                            @order.Status
+                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Delivered ? "bg-primary text-white" : "bg-secondary")">
+                                            @(order.Status switch
+                                            {
+                                                BoxManager.Models.OrderStatus.Pending => "In attesa",
+                                                BoxManager.Models.OrderStatus.InProduction => "In produzione",
+                                                BoxManager.Models.OrderStatus.Completed => "Completato",
+                                                BoxManager.Models.OrderStatus.Delivered => "Consegnato",
+                                                BoxManager.Models.OrderStatus.Cancelled => "Annullato",
+                                                _ => order.Status.ToString()
+                                            })
                                         </span>
                                     </td>
                                     <td>€ @order.TotalPrice.ToString("N2")</td>

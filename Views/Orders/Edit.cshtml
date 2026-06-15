@@ -1,0 +1,282 @@
+@model BoxManager.Models.Order
+@{
+    ViewData["Title"] = "Modifica Ordine #" + Model.Id;
+    var sheet = Model.TechnicalSheet;
+}
+
+<div id="editOrderApp" class="container">
+    <h2 class="fw-bold mb-4">Modifica Ordine #@Model.Id</h2>
+
+    @if (ViewBag.ModelErrors != null && ((List<string>)ViewBag.ModelErrors).Count > 0)
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Errori di validazione:</strong>
+            <ul class="mb-0">
+                @foreach (var err in (List<string>)ViewBag.ModelErrors)
+                {
+                    <li>@err</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" id="returnUrlField" />
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="OrderDate" />
+        <input type="hidden" asp-for="TechnicalSheet.Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Informazioni Ordine</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Cliente</label>
+                                <select asp-for="CustomerId" class="form-select" required>
+                                    <option value="">Seleziona un cliente...</option>
+                                    @foreach (var c in ViewBag.Customers)
+                                    {
+                                        <option value="@c.Id">@c.BusinessName</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="CustomerId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Codice Scatola</label>
+                                <input asp-for="BoxCode" class="form-control" placeholder="es. BX-100" required />
+                                <span asp-validation-for="BoxCode" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">1. Struttura</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Lunghezza (L)</label>
+                                <input asp-for="TechnicalSheet.Length" class="form-control" required />
+                                <span asp-validation-for="TechnicalSheet.Length" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Larghezza (W)</label>
+                                <input asp-for="TechnicalSheet.Width" class="form-control" required />
+                                <span asp-validation-for="TechnicalSheet.Width" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Altezza (H)</label>
+                                <input asp-for="TechnicalSheet.Height" class="form-control" required />
+                                <span asp-validation-for="TechnicalSheet.Height" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipologia Cartone</label>
+                            <input asp-for="TechnicalSheet.CardboardType" class="form-control" required />
+                            <span asp-validation-for="TechnicalSheet.CardboardType" class="text-danger small"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tipo Onda</label>
+                                <select asp-for="TechnicalSheet.WaveType" class="form-select" required>
+                                    <option value="A">A (Alta)</option>
+                                    <option value="B">B (Bassa)</option>
+                                    <option value="C">C (Media)</option>
+                                    <option value="E">E (Micro)</option>
+                                    <option value="BC">BC (Doppia)</option>
+                                </select>
+                                <span asp-validation-for="TechnicalSheet.WaveType" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Codice FEFCO</label>
+                                <input asp-for="TechnicalSheet.FefcoCode" class="form-control" placeholder="es. 0201" required />
+                                <span asp-validation-for="TechnicalSheet.FefcoCode" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">2. Stampa</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" asp-for="TechnicalSheet.HasPrinting" id="hasPrinting" />
+                            <label class="form-check-label" for="hasPrinting">Presenza Stampa</label>
+                        </div>
+                        <div id="printingOptions">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Numero Colori</label>
+                                    <input asp-for="TechnicalSheet.ColorCount" class="form-control" min="0" />
+                                    <span asp-validation-for="TechnicalSheet.ColorCount" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tipologia Stampa</label>
+                                    <select asp-for="TechnicalSheet.PrintingType" class="form-select">
+                                        <option value="Offset">Offset</option>
+                                        <option value="Flexo">Flexo</option>
+                                        <option value="Digitale">Digitale</option>
+                                    </select>
+                                    <span asp-validation-for="TechnicalSheet.PrintingType" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Finiture Speciali</label>
+                                <input asp-for="TechnicalSheet.SpecialFinishes" class="form-control" />
+                                <span asp-validation-for="TechnicalSheet.SpecialFinishes" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Codici Colori <span class="text-muted">(opzionale)</span></label>
+                                <input asp-for="TechnicalSheet.ColorCodes" class="form-control" placeholder="es. #FF0000, #00AEEF, #000000" />
+                                <span asp-validation-for="TechnicalSheet.ColorCodes" class="text-danger small"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Logo Cliente</label>
+                                    <input type="file" name="CustomerLogo" accept="image/*" class="form-control" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Note Stampa</label>
+                                    <textarea asp-for="TechnicalSheet.PrintingNotes" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="TechnicalSheet.PrintingNotes" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm border-primary">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 fw-bold">3. Aspetti Economici</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Quantità</label>
+                                <input asp-for="Quantity" class="form-control" v-model.number="quantity" min="1" required />
+                                <span asp-validation-for="Quantity" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Prezzo Unitario (€)</label>
+                                <input asp-for="TechnicalSheet.UnitPrice" class="form-control" v-model.number="unitPrice" step="0.01" required />
+                                <span asp-validation-for="TechnicalSheet.UnitPrice" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Sconto (%)</label>
+                                <input asp-for="TechnicalSheet.Discount" class="form-control" v-model.number="discount" step="0.1" />
+                                <span asp-validation-for="TechnicalSheet.Discount" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="p-3 bg-light rounded text-end">
+                                    <small class="text-muted d-block">Totale Calcolato</small>
+                                    <h4 class="mb-0 fw-bold text-primary">€ {{ totalFormatted }}</h4>
+                                    <input type="hidden" name="TotalPrice" :value="totalPrice" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mb-5">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Annulla</a>
+            <button type="submit" class="btn btn-success px-5">Salva Ordine</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    quantity: @Model.Quantity,
+                    unitPrice: @((sheet?.UnitPrice ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture)),
+                    discount: @((sheet?.Discount ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture))
+                };
+            },
+            computed: {
+                totalPrice() {
+                    const baseValue = this.quantity * this.unitPrice;
+                    const taxed = baseValue * (1 - (this.discount / 100));
+                    return taxed.toFixed(2);
+                },
+                totalFormatted() {
+                    return parseFloat(this.totalPrice).toLocaleString('it-IT', { minimumFractionDigits: 2 });
+                }
+            }
+        }).mount('#editOrderApp');
+    </script>
+    <script>
+        function updatePrintingSection() {
+            var checkbox = document.getElementById('hasPrinting');
+            var section = document.getElementById('printingOptions');
+            if (!checkbox || !section) return;
+
+            var enabled = checkbox.checked;
+            section.style.display = enabled ? '' : 'none';
+            section.querySelectorAll('input, select, textarea').forEach(function(element) {
+                if (!enabled) {
+                    if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
+                        if (element.type !== 'hidden') {
+                            element.value = '';
+                        }
+                    }
+                    if (element.tagName.toLowerCase() === 'select') {
+                        element.selectedIndex = 0;
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkbox = document.getElementById('hasPrinting');
+            if (!checkbox) return;
+            updatePrintingSection();
+            checkbox.addEventListener('change', updatePrintingSection);
+        });
+    </script>
+    <script>
+        // If server didn't supply a returnUrl, use document.referrer as fallback.
+        (function() {
+            try {
+                var field = document.getElementById('returnUrlField');
+                if (field && !field.value) {
+                    field.value = document.referrer || '';
+                }
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    @if (TempData["JustSavedReturnUrl"] != null)
+    {
+        <script>
+            (function(){
+                var r = '@TempData["JustSavedReturnUrl"]';
+                try {
+                    if (r && r.length && r.charAt(0) === '/') {
+                        window.location.href = r;
+                    }
+                } catch(e) {}
+            })();
+        </script>
+    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

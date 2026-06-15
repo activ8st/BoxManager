@@ -6,7 +6,7 @@
 <div id="createOrderApp" class="container">
     <h2 class="fw-bold mb-4">Nuovo Ordine e Scheda Tecnica</h2>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="row">
             <!-- Informazioni Generali -->
             <div class="col-md-12 mb-4">
@@ -95,19 +95,34 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Numero Colori</label>
-                                    <input type="number" name="ColorCount" class="form-control" />
+                                    <input type="number" name="ColorCount" class="form-control" min="0" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Tipologia Stampa</label>
                                     <select name="PrintingType" class="form-select">
-                                        <option value="Flexo">Flexo</option>
                                         <option value="Offset">Offset</option>
+                                        <option value="Flexo">Flexo</option>
+                                        <option value="Digitale">Digitale</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Finiture Speciali</label>
                                 <input type="text" name="SpecialFinishes" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Codici Colori <span class="text-muted">(opzionale)</span></label>
+                                <input type="text" name="ColorCodes" class="form-control" placeholder="es. #FF0000, #00AEEF, #000000" />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Logo Cliente</label>
+                                    <input type="file" name="CustomerLogo" accept="image/*" class="form-control" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Note Stampa</label>
+                                    <textarea name="PrintingNotes" class="form-control" rows="3"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>

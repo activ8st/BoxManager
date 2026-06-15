@@ -5,7 +5,7 @@
 
 <div class="row mb-4">
     <div class="col-md-3">
-        <div class="card shadow-sm card-stat h-100">
+        <div class="card card-stat card-stat-level-1 h-100">
             <div class="card-body">
                 <h6 class="text-muted text-uppercase small">Ordini Totali</h6>
                 <h3 class="fw-bold mb-0">@Model.TotalOrders</h3>
@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card shadow-sm card-stat h-100 border-success" style="border-left-color: #808080 !important;">
+        <div class="card card-stat card-stat-level-1 h-100">
             <div class="card-body">
                 <h6 class="text-muted text-uppercase small">Clienti Attivi</h6>
                 <h3 class="fw-bold mb-0">@Model.ActiveCustomers</h3>
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card shadow-sm card-stat h-100 border-warning" style="border-left-color: #808080 !important;">
+        <div class="card card-stat card-stat-level-1 h-100">
             <div class="card-body">
                 <h6 class="text-muted text-uppercase small">Fatturato Stimato</h6>
                 <h3 class="fw-bold mb-0">€ @Model.EstimatedRevenue.ToString("N2")</h3>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card shadow-sm card-stat h-100 border-info" style="border-left-color: #808080 !important;">
+        <div class="card card-stat card-stat-level-1 h-100">
             <div class="card-body">
                 <h6 class="text-muted text-uppercase small">In Produzione</h6>
                 <h3 class="fw-bold mb-0">@Model.OrdersInProduction</h3>
@@ -65,8 +65,16 @@
                                     <td>@order.Customer.BusinessName</td>
                                     <td>@order.BoxCode</td>
                                     <td>
-                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (order.Status == BoxManager.Models.OrderStatus.InProduction || order.Status == BoxManager.Models.OrderStatus.Pending ? "badge-gray" : (order.Status == BoxManager.Models.OrderStatus.Delivered ? "bg-primary text-white" : "bg-warning text-dark")))">
-                                            @order.Status
+                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Delivered ? "bg-primary text-white" : "badge-gray")">
+                                            @(order.Status switch
+                                            {
+                                                BoxManager.Models.OrderStatus.Pending => "In attesa",
+                                                BoxManager.Models.OrderStatus.InProduction => "In produzione",
+                                                BoxManager.Models.OrderStatus.Completed => "Completato",
+                                                BoxManager.Models.OrderStatus.Delivered => "Consegnato",
+                                                BoxManager.Models.OrderStatus.Cancelled => "Annullato",
+                                                _ => order.Status.ToString()
+                                            })
                                         </span>
                                     </td>
                                     <td>€ @order.TotalPrice.ToString("N2")</td>
@@ -82,7 +90,6 @@
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold">Ricerca Rapida Clienti</h5>
-                <a asp-controller="Customers" asp-action="Create" class="btn btn-sm btn-primary">+ Nuovo</a>
             </div>
             <div class="card-body">
                 <div class="input-group mb-3">

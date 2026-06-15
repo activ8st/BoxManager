@@ -128,19 +128,15 @@
                     {
                         var statusColorClass = order.Status switch
                         {
-                            BoxManager.Models.OrderStatus.Pending => "bg-warning text-dark",
-                            BoxManager.Models.OrderStatus.InProduction => "bg-warning text-dark",
-                            BoxManager.Models.OrderStatus.Completed => "bg-primary text-white",
                             BoxManager.Models.OrderStatus.Delivered => "bg-primary text-white",
-                            BoxManager.Models.OrderStatus.Cancelled => "bg-danger text-white",
-                            _ => "bg-secondary text-white"
+                            _ => "badge-gray"
                         };
                         
                         var statusName = order.Status switch
                         {
                             BoxManager.Models.OrderStatus.Pending => "In attesa",
-                            BoxManager.Models.OrderStatus.InProduction => "In corso",
-                            BoxManager.Models.OrderStatus.Completed => "Pronto",
+                            BoxManager.Models.OrderStatus.InProduction => "In produzione",
+                            BoxManager.Models.OrderStatus.Completed => "Completato",
                             BoxManager.Models.OrderStatus.Delivered => "Consegnato",
                             BoxManager.Models.OrderStatus.Cancelled => "Annullato",
                             _ => order.Status.ToString()

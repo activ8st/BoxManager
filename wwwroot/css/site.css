@@ -143,9 +143,26 @@ html, body {
 }
 
 .card-stat {
+  border-left: 4px solid #808080 !important;
   border-left-width: 5px !important;
   border-radius: 0.75rem !important;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-stat-level-1 {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+.card-stat-level-2 {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+.card-stat-level-3 {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+.card-stat-level-4 {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10) !important;
 }
 
 .card-stat:hover {

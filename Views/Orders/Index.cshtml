@@ -11,7 +11,7 @@
     </div>
     @if (User.IsInRole("Admin"))
     {
-        <a asp-action="Create" class="btn btn-outline-dark rounded-pill px-3 py-2 d-flex align-items-center bg-white shadow-sm fw-medium" style="font-size: 0.85rem;"><span class="me-2">Nuovo ordine</span> <i class="bi bi-plus-lg fs-6"></i></a>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Nuovo ordine</a>
     }
 </div>
 
@@ -25,10 +25,10 @@
             In attesa <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.PendingCount</span>
         </a>
         <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(currentStatusFilter == "InProduction" ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders?statusFilter=InProduction">
-            In corso <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.InProductionCount</span>
+            In produzione <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.InProductionCount</span>
         </a>
         <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(currentStatusFilter == "Completed" ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders?statusFilter=Completed">
-            Pronto <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.CompletedCount</span>
+            Completato <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.CompletedCount</span>
         </a>
         <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(currentStatusFilter == "Delivered" ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders?statusFilter=Delivered">
             Consegnato <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.DeliveredCount</span>
@@ -41,7 +41,7 @@
         {
             <input type="hidden" name="statusFilter" value="@currentStatusFilter" />
         }
-        <div class="input-group input-group-sm bg-white rounded-pill border px-2 py-1 shadow-sm w-100 align-items-center">
+        <div class="input-group input-group-sm bg-white rounded-3 border px-2 py-1 shadow-sm w-100 align-items-center">
             <span class="input-group-text bg-transparent border-0 text-muted p-0 me-2"><i class="bi bi-search"></i></span>
             <input type="text" name="searchString" class="form-control border-0 bg-transparent p-0" placeholder="Cerca ordine, cliente, cod..." value="@ViewBag.CurrentFilter" style="box-shadow: none; font-size: 0.85rem;" />
         </div>
@@ -70,8 +70,8 @@
                         var displayName = item.Status switch
                         {
                             BoxManager.Models.OrderStatus.Pending => "In attesa",
-                            BoxManager.Models.OrderStatus.InProduction => "In corso",
-                            BoxManager.Models.OrderStatus.Completed => "Pronto",
+                            BoxManager.Models.OrderStatus.InProduction => "In produzione",
+                            BoxManager.Models.OrderStatus.Completed => "Completato",
                             BoxManager.Models.OrderStatus.Delivered => "Consegnato",
                             BoxManager.Models.OrderStatus.Cancelled => "Annullato",
                             _ => item.Status.ToString()
@@ -105,8 +105,8 @@
                                             var optName = status switch
                                             {
                                                 BoxManager.Models.OrderStatus.Pending => "In attesa",
-                                                BoxManager.Models.OrderStatus.InProduction => "In corso",
-                                                BoxManager.Models.OrderStatus.Completed => "Pronto",
+                                                BoxManager.Models.OrderStatus.InProduction => "In produzione",
+                                                BoxManager.Models.OrderStatus.Completed => "Completato",
                                                 BoxManager.Models.OrderStatus.Delivered => "Consegnato",
                                                 BoxManager.Models.OrderStatus.Cancelled => "Annullato",
                                                 _ => status.ToString()
