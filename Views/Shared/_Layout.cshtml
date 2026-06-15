@@ -86,12 +86,13 @@
             <nav class="nav nav-pills flex-column sidebar-nav p-0">
                 @if (User?.Identity?.IsAuthenticated ?? false)
                 {
+                    <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                        <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                        <i class="bi bi-chevron-right small opacity-50"></i>
+                    </a>
+                    
                     if (User.IsInRole("Admin"))
                     {
-                        <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                            <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
-                            <i class="bi bi-chevron-right small opacity-50"></i>
-                        </a>
                         <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
                             <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
                             <i class="bi bi-chevron-right small opacity-50"></i>
@@ -141,12 +142,13 @@
             <div class="sidebar-nav">
                 @if (User?.Identity?.IsAuthenticated ?? false)
                 {
+                    <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                        <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                        <i class="bi bi-chevron-right small opacity-50"></i>
+                    </a>
+                    
                     if (User.IsInRole("Admin"))
                     {
-                        <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                            <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
-                            <i class="bi bi-chevron-right small opacity-50"></i>
-                        </a>
                         <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
                             <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
                             <i class="bi bi-chevron-right small opacity-50"></i>

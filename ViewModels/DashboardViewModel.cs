@@ -1,5 +1,5 @@
 using BoxManager.Models;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 
 namespace BoxManager.ViewModels
 {

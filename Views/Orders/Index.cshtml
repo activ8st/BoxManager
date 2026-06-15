@@ -4,14 +4,14 @@
     var currentStatusFilter = ViewBag.CurrentStatusFilter as string;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 mt-2">
     <div>
-        <h2 class="fw-bold text-dark mb-1">Ordini</h2>
-        <p class="text-muted mb-0">@ViewBag.TotalCount ordini totali</p>
+        <h2 class="fw-bold text-dark mb-0" style="font-size: 1.75rem;">Ordini</h2>
+        <p class="text-muted mb-0" style="font-size: 0.9rem;">@ViewBag.TotalCount ordini totali</p>
     </div>
     @if (User.IsInRole("Admin"))
     {
-        <a asp-action="Create" class="btn btn-primary d-flex align-items-center"><i class="bi bi-plus-circle me-2"></i>Nuovo Ordine</a>
+        <a asp-action="Create" class="btn btn-outline-dark rounded-pill px-3 py-2 d-flex align-items-center bg-white shadow-sm fw-medium" style="font-size: 0.85rem;"><span class="me-2">Nuovo ordine</span> <i class="bi bi-plus-lg fs-6"></i></a>
     }
 </div>
 
@@ -53,14 +53,15 @@
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
-                    <tr style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <tr style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280;">
                         <th class="ps-4">ID Ordine</th>
-                        <th>Cliente</th>
+                        @if (User.IsInRole("Admin")) { <th>Cliente</th> }
                         <th>Referente</th>
                         <th>Codice Scatola</th>
+                        <th>Codice Fefco</th>
                         <th>Data</th>
                         <th>Stato</th>
-                        <th class="pe-4 text-end">Azioni</th>
+                        @if (User.IsInRole("Admin")) { <th class="pe-4 text-end">Azioni</th> }
                     </tr>
                 </thead>
                 <tbody>
@@ -76,21 +77,22 @@
                             _ => item.Status.ToString()
                         };
 
-                        var badgeClass = item.Status switch
+                        var dotColor = item.Status switch
                         {
-                            BoxManager.Models.OrderStatus.Pending => "badge-pending",
-                            BoxManager.Models.OrderStatus.InProduction => "badge-inproduction",
-                            BoxManager.Models.OrderStatus.Completed => "badge-completed",
-                            BoxManager.Models.OrderStatus.Cancelled => "badge-cancelled",
-                            _ => "badge-delivered"
+                            BoxManager.Models.OrderStatus.Pending => "text-warning",
+                            BoxManager.Models.OrderStatus.InProduction => "text-success",
+                            BoxManager.Models.OrderStatus.Completed => "text-primary",
+                            BoxManager.Models.OrderStatus.Cancelled => "text-danger",
+                            _ => "text-secondary"
                         };
 
                         <tr id="order-row-@item.Id">
-                            <td class="ps-4 fw-medium text-secondary">ORD-2026-@item.Id.ToString("D3")</td>
-                            <td class="fw-bold text-dark">@item.Customer.BusinessName</td>
-                            <td class="text-muted" style="font-size: 0.9rem;">@item.Referente</td>
-                            <td>@item.BoxCode</td>
-                            <td style="font-size: 0.9rem;">@item.OrderDate.ToString("dd/MM/yy")</td>
+                            <td class="ps-4 fw-medium text-secondary" style="font-size: 0.9rem;">ORD-2026-@item.Id.ToString("D3")</td>
+                            @if (User.IsInRole("Admin")) { <td class="fw-bold text-dark">@item.Customer.BusinessName</td> }
+                            <td class="text-dark fw-medium" style="font-size: 0.9rem;">@item.Referente</td>
+                            <td class="text-secondary" style="font-size: 0.9rem;">@item.BoxCode</td>
+                            <td class="text-secondary" style="font-size: 0.9rem;">Fefco @((item.Id % 5) + 1)</td>
+                            <td style="font-size: 0.9rem;" class="text-secondary">@item.OrderDate.ToString("dd/MM/yy")</td>
                             <td>
                                 @if (User.IsInRole("Admin"))
                                 {
@@ -115,12 +117,16 @@
                                 }
                                 else
                                 {
-                                    <span class="badge-status @badgeClass">@displayName</span>
+                                    <span style="font-size: 0.85rem; font-weight: 500;" class="text-dark">
+                                        <i class="bi bi-circle-fill @dotColor me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>@displayName
+                                    </span>
                                 }
                             </td>
-                            <td class="pe-4 text-end">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border" title="Dettagli" style="border-radius: 0.375rem;"><i class="bi bi-file-earmark-text me-1"></i>Dettagli</a>
-                            </td>
+                            @if (User.IsInRole("Admin")) {
+                                <td class="pe-4 text-end">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border" title="Dettagli" style="border-radius: 0.375rem;"><i class="bi bi-file-earmark-text me-1"></i>Dettagli</a>
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>

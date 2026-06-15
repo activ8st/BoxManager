@@ -24,14 +24,7 @@ namespace BoxManager.Controllers
         {
             if (User?.Identity?.IsAuthenticated ?? false)
             {
-                if (User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Orders");
-                }
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
@@ -96,7 +89,7 @@ namespace BoxManager.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                return RedirectToAction("Index", "Orders");
+                return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError(string.Empty, "Indirizzo e-mail non registrato nel sistema.");
