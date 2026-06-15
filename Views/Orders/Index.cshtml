@@ -61,7 +61,7 @@
                         <th>Codice Fefco</th>
                         <th>Data</th>
                         <th>Stato</th>
-                        @if (User.IsInRole("Admin")) { <th class="pe-4 text-end">Azioni</th> }
+                        <th class="pe-4 text-end">Azioni</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,11 +122,9 @@
                                     </span>
                                 }
                             </td>
-                            @if (User.IsInRole("Admin")) {
-                                <td class="pe-4 text-end">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border" title="Dettagli" style="border-radius: 0.375rem;"><i class="bi bi-file-earmark-text me-1"></i>Dettagli</a>
-                                </td>
-                            }
+                            <td class="pe-4 text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border" title="Dettagli" style="border-radius: 0.375rem;"><i class="bi bi-file-earmark-text me-1"></i>Dettagli</a>
+                            </td>
                         </tr>
                     }
                 </tbody>
