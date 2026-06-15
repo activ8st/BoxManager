@@ -118,31 +118,7 @@
             </div>
         </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white fw-bold">Stato Avanzamento</div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label class="form-label small text-muted">Stato attuale</label>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge rounded-pill p-2 px-3 @(Model.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (Model.Status == BoxManager.Models.OrderStatus.InProduction || Model.Status == BoxManager.Models.OrderStatus.Pending ? "badge-gray" : "bg-warning text-dark"))">@Model.Status</span>
-                        <small class="text-muted">@Model.OrderDate.ToString("dd/MM/yyyy")</small>
-                    </div>
-                </div>
-                <div class="progress" style="height: 10px;">
-                    @{
-                        var progress = Model.Status switch {
-                            BoxManager.Models.OrderStatus.Pending => 25,
-                            BoxManager.Models.OrderStatus.InProduction => 50,
-                            BoxManager.Models.OrderStatus.Completed => 75,
-                            BoxManager.Models.OrderStatus.Delivered => 100,
-                            _ => 0
-                        };
-                    }
-                    <div class="progress-bar" role="progressbar" style="width: @progress%;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
     <div class="col-lg-8">
         <div class="tab-content">

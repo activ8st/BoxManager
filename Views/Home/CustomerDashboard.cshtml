@@ -45,14 +45,15 @@
     <div>
         <h2 class="fw-bold text-dark mb-1">@Model.BusinessName</h2>
         <div class="text-muted d-flex align-items-center">
-            <span class="me-2">C@Model.Id.ToString("D3")</span> &bull; 
+            <span class="me-2">@($"C{Model.Id:D3}")</span> &bull; 
             <span class="ms-2">Cliente dal 10/03/2023</span>
         </div>
     </div>
     <div>
-        <button class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm">
+        <a asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.Id" 
+           class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm text-decoration-none">
             <i class="bi bi-pencil me-2"></i>Modifica
-        </button>
+        </a>
     </div>
 </div>
 
