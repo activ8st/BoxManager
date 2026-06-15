@@ -9,7 +9,7 @@ namespace BoxManager.ViewModels
         public int ActiveCustomers { get; set; }
         public decimal EstimatedRevenue { get; set; }
         public int OrdersInProduction { get; set; }
-        public List<Order> RecentOrders { get; set; }
-        public List<Customer> Customers { get; set; }
+        public List<Order> RecentOrders { get; set; } = new List<Order>();
+        public List<Customer> Customers { get; set; } = new List<Customer>();
     }
 }

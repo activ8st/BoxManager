@@ -57,7 +57,7 @@
                                     <td>@order.BoxCode</td>
                                     <td>@order.Quantity</td>
                                     <td>
-                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (order.Status == BoxManager.Models.OrderStatus.InProduction ? "bg-info" : "bg-warning text-dark"))">
+                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (order.Status == BoxManager.Models.OrderStatus.InProduction || order.Status == BoxManager.Models.OrderStatus.Pending ? "badge-gray" : "bg-warning text-dark"))">
                                             @order.Status
                                         </span>
                                     </td>

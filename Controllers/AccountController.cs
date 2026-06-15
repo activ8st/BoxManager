@@ -22,7 +22,7 @@ namespace BoxManager.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User?.Identity?.IsAuthenticated ?? false)
             {
                 if (User.IsInRole("Admin"))
                 {
@@ -67,9 +67,9 @@ namespace BoxManager.Controllers
             // Cerca l'email tra i referenti degli ordini
             var orderWithReferent = await _context.Orders
                 .Include(o => o.Customer)
-                .FirstOrDefaultAsync(o => o.Referente.ToLower() == cleanEmail);
+                .FirstOrDefaultAsync(o => o.Referente != null && o.Referente.ToLower() == cleanEmail);
 
-            Customer customer = null;
+            Customer? customer = null;
             if (orderWithReferent != null)
             {
                 customer = orderWithReferent.Customer;

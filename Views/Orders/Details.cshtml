@@ -3,32 +3,96 @@
     ViewData["Title"] = "Dettaglio Ordine #" + Model.Id;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-1">
-                <li class="breadcrumb-item"><a asp-action="Index">Ordini</a></li>
-                <li class="breadcrumb-item active">Dettaglio #@Model.Id</li>
-            </ol>
-        </nav>
-        <h2 class="fw-bold mb-0">Ordine #@Model.Id - @Model.BoxCode</h2>
+@{
+    var sheet = Model.TechnicalSheet;
+    var customer = Model.Customer;
+}
+
+<div class="card shadow-sm mb-4 border-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-2"><i class="bi bi-arrow-left me-1"></i>Ordini</a>
+                <h2 class="fw-bold mb-1">@($"ORD-{Model.OrderDate:yyyy}-{Model.Id:D3}")</h2>
+                <p class="text-muted mb-1">Data: @Model.OrderDate.ToString("dd/MM/yyyy")</p>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none d-block mb-2">@(customer?.BusinessName ?? "—")</a>
+            </div>
+
+            <div class="d-flex gap-2 align-items-center">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary me-2"><i class="bi bi-pencil me-1"></i>Modifica</a>
+                    <button id="startProductionBtn" class="btn btn-primary" onclick="updateStatus('InProduction')">Avvia Produzione »</button>
+                }
+            </div>
+        </div>
+
+        <!-- Second row: three summary cards (centered) -->
+        <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+            <div class="card border shadow-sm p-3 text-center" style="min-width: 10rem;">
+                <div class="text-muted small">Quantità</div>
+                <div class="h4 fw-bold mb-0">@Model.Quantity</div>
+            </div>
+            <div class="card border shadow-sm p-3 text-center" style="min-width: 10rem;">
+                <div class="text-muted small">Totale</div>
+                <div class="h4 fw-bold mb-0">€ @Model.TotalPrice.ToString("N2")</div>
+            </div>
+            <div class="card border shadow-sm p-3 text-center" style="min-width: 10rem;">
+                <div class="text-muted small">Codice FEFCO</div>
+                <div class="h4 fw-bold mb-0">@(sheet?.FefcoCode ?? "—")</div>
+            </div>
+        </div>
+
+          <!-- Third row: stepper centered -->
+          <div class="d-flex justify-content-center mt-4">
+                @{ var statuses = new[] { Tuple.Create("In Attesa", BoxManager.Models.OrderStatus.Pending), Tuple.Create("In Produzione", BoxManager.Models.OrderStatus.InProduction), Tuple.Create("Completato", BoxManager.Models.OrderStatus.Completed), Tuple.Create("Consegnato", BoxManager.Models.OrderStatus.Delivered) };
+                    var current = Model.Status;
+                }
+                <div class="stepper" style="max-width:720px; width:100%;">
+                <div class="line"></div>
+                <ul class="list-unstyled d-flex mb-0">
+                    @for (int i = 0; i < statuses.Length; i++) {
+                        var item = statuses[i];
+                        var isCurrent = current == item.Item2;
+                        <li class="text-center" style="flex:1;">
+                            <div class="circle @(isCurrent ? "active" : "")">&nbsp;</div>
+                            <div class="small text-muted mt-1">@item.Item1</div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="btn-group">
-        <button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer me-2"></i>Stampa Scheda</button>
-        <a asp-action="Index" class="btn btn-primary">Torna alla lista</a>
+</div>
+
+<!-- Tabs -->
+<div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-8">
+        <ul class="nav nav-tabs mb-3" id="orderTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="struttura-tab" data-bs-toggle="tab" data-bs-target="#struttura" type="button" role="tab">Struttura</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="stampa-tab" data-bs-toggle="tab" data-bs-target="#stampa" type="button" role="tab">Stampa</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="economici-tab" data-bs-toggle="tab" data-bs-target="#economici" type="button" role="tab">Aspetti Economici</button>
+            </li>
+        </ul>
     </div>
 </div>
 
 <div class="row">
-    <!-- Colonna Sinistra: Dati Cliente e Stato -->
-    <div class="col-md-4">
+    <div class="col-lg-4">
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white fw-bold">Dati Cliente</div>
+            <div class="card-header bg-white fw-bold">Cliente</div>
             <div class="card-body">
-                <h5 class="fw-bold text-primary">@Model.Customer.BusinessName</h5>
-                <p class="mb-1"><i class="bi bi-geo-alt me-2"></i>@Model.Customer.Address</p>
-                <p class="mb-1"><i class="bi bi-envelope me-2"></i>@Model.Customer.Email</p>
-                <p class="mb-0"><i class="bi bi-person me-2"></i>@Model.Customer.ContactPerson (@Model.Customer.Phone)</p>
+                <h5 class="fw-bold text-primary mb-2">@(customer?.BusinessName ?? "—")</h5>
+                <p class="mb-2"><i class="bi bi-geo-alt me-2"></i>@(customer?.Address ?? "—")</p>
+                <p class="mb-2"><i class="bi bi-envelope me-2"></i>@(customer?.Email ?? "—")</p>
+                <p class="mb-2"><i class="bi bi-telephone me-2"></i>@(customer?.Phone ?? "—")</p>
+                <p class="mb-0"><i class="bi bi-person me-2"></i>@(customer?.ContactPerson ?? "—")</p>
             </div>
         </div>
 
@@ -36,11 +100,10 @@
             <div class="card-header bg-white fw-bold">Stato Avanzamento</div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label class="form-label small text-muted">Stato Attuale</label>
-                    <div class="d-flex align-items-center">
-                        <span class="badge rounded-pill p-2 px-3 @(Model.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (Model.Status == BoxManager.Models.OrderStatus.InProduction ? "bg-info" : "bg-warning text-dark"))">
-                            @Model.Status
-                        </span>
+                    <label class="form-label small text-muted">Stato attuale</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge rounded-pill p-2 px-3 @(Model.Status == BoxManager.Models.OrderStatus.Completed ? "bg-success" : (Model.Status == BoxManager.Models.OrderStatus.InProduction || Model.Status == BoxManager.Models.OrderStatus.Pending ? "badge-gray" : "bg-warning text-dark"))">@Model.Status</span>
+                        <small class="text-muted">@Model.OrderDate.ToString("dd/MM/yyyy")</small>
                     </div>
                 </div>
                 <div class="progress" style="height: 10px;">
@@ -59,77 +122,85 @@
         </div>
     </div>
 
-    <!-- Colonna Destra: Scheda Tecnica -->
-    <div class="col-md-8">
-        <div class="card shadow-sm mb-4 border-0">
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">SCHEDA TECNICA DI PRODUZIONE</h5>
-                <span class="badge bg-secondary">FEFCO @Model.TechnicalSheet.FefcoCode</span>
-            </div>
-            <div class="card-body border">
-                <div class="row mb-4">
-                    <div class="col-md-12">
-                        <h6 class="text-uppercase fw-bold border-bottom pb-2 mb-3">1. Caratteristiche Strutturali</h6>
-                        <div class="row text-center">
-                            <div class="col-4">
-                                <div class="p-2 bg-light rounded">
-                                    <small class="text-muted d-block">Lunghezza (L)</small>
-                                    <span class="h5 fw-bold">@Model.TechnicalSheet.Length mm</span>
+    <div class="col-lg-8">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="struttura" role="tabpanel">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold">Struttura</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 bg-light rounded text-center">
+                                    <small class="text-muted d-block">Lunghezza (MM)</small>
+                                    <div class="h5 fw-bold">@((sheet != null) ? $"{sheet.Length} mm" : "—")</div>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="p-2 bg-light rounded">
-                                    <small class="text-muted d-block">Larghezza (W)</small>
-                                    <span class="h5 fw-bold">@Model.TechnicalSheet.Width mm</span>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 bg-light rounded text-center">
+                                    <small class="text-muted d-block">Larghezza (MM)</small>
+                                    <div class="h5 fw-bold">@((sheet != null) ? $"{sheet.Width} mm" : "—")</div>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="p-2 bg-light rounded">
-                                    <small class="text-muted d-block">Altezza (H)</small>
-                                    <span class="h5 fw-bold">@Model.TechnicalSheet.Height mm</span>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 bg-light rounded text-center">
+                                    <small class="text-muted d-block">Altezza (MM)</small>
+                                    <div class="h5 fw-bold">@((sheet != null) ? $"{sheet.Height} mm" : "—")</div>
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-3">
-                            <div class="col-md-6">
-                                <p><strong>Tipo Cartone:</strong> @Model.TechnicalSheet.CardboardType</p>
+                            <div class="col-md-4">
+                                <p class="small text-muted mb-1">Tipologia Cartone</p>
+                                <div class="fw-bold">@(sheet?.CardboardType ?? "—")</div>
                             </div>
-                            <div class="col-md-6">
-                                <p><strong>Onda:</strong> @Model.TechnicalSheet.WaveType</p>
+                            <div class="col-md-4">
+                                <p class="small text-muted mb-1">Tipo Onda</p>
+                                <div class="fw-bold">@(sheet?.WaveType ?? "—")</div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <p class="small text-muted mb-1">Codice FEFCO</p>
+                                <div class="badge bg-dark text-white">@(sheet?.FefcoCode ?? "—")</div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="row mb-4">
-                    <div class="col-md-12">
-                        <h6 class="text-uppercase fw-bold border-bottom pb-2 mb-3">2. Specifiche di Stampa</h6>
-                        @if (Model.TechnicalSheet.HasPrinting)
+            <div class="tab-pane fade" id="stampa" role="tabpanel">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold">Stampa</div>
+                    <div class="card-body">
+                        @if (sheet != null && sheet.HasPrinting)
                         {
                             <div class="row">
-                                <div class="col-md-4">
-                                    <p><strong>Tipo:</strong> @Model.TechnicalSheet.PrintingType</p>
+                                <div class="col-md-4 mb-3">
+                                    <p class="small text-muted mb-1">Tipo</p>
+                                    <div class="fw-bold">@(sheet?.PrintingType ?? "-")</div>
                                 </div>
-                                <div class="col-md-4">
-                                    <p><strong>Colori:</strong> @Model.TechnicalSheet.ColorCount</p>
+                                <div class="col-md-4 mb-3">
+                                    <p class="small text-muted mb-1">Colori</p>
+                                    <div class="fw-bold">@(sheet?.ColorCount ?? 0)</div>
                                 </div>
-                                <div class="col-md-4">
-                                    <p><strong>Finiture:</strong> @(Model.TechnicalSheet.SpecialFinishes ?? "Standard")</p>
+                                <div class="col-md-4 mb-3">
+                                    <p class="small text-muted mb-1">Finiture</p>
+                                    <div class="fw-bold">@(sheet?.SpecialFinishes ?? "Standard")</div>
                                 </div>
                             </div>
                         }
                         else
                         {
-                            <p class="text-muted italic">Nessuna stampa richiesta per questo ordine.</p>
+                            <p class="text-muted fst-italic">Nessuna stampa richiesta per questo ordine.</p>
                         }
                     </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <h6 class="text-uppercase fw-bold border-bottom pb-2 mb-3">3. Riepilogo Economico</h6>
+            <div class="tab-pane fade" id="economici" role="tabpanel">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold">Aspetti Economici</div>
+                    <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Quantità</th>
@@ -141,8 +212,8 @@
                                 <tbody>
                                     <tr>
                                         <td>@Model.Quantity pz</td>
-                                        <td>€ @Model.TechnicalSheet.UnitPrice.ToString("N2")</td>
-                                        <td>@Model.TechnicalSheet.Discount %</td>
+                                        <td>€ @(sheet != null ? sheet.UnitPrice.ToString("N2") : "0.00")</td>
+                                        <td>@(sheet != null ? sheet.Discount.ToString() : "0") %</td>
                                         <td class="text-end fw-bold h5 text-primary">€ @Model.TotalPrice.ToString("N2")</td>
                                     </tr>
                                 </tbody>
@@ -156,9 +227,44 @@
 </div>
 
 <style>
+    .stepper { position: relative; padding: 1rem 0 0.5rem 0; }
+    .stepper .line { position:absolute; left:0; right:0; top:18px; height:3px; background:#e9ecef; z-index:0; }
+    .stepper ul { position:relative; z-index:1; display:flex; justify-content:space-between; align-items:center; padding:0; margin:0; list-style:none; }
+    .stepper ul li { text-align:center; }
+    .stepper .circle { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; border:1px solid #ced4da; background:#fff; color:#6c757d; }
+    .stepper .circle.active { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+
     @@media print {
         .btn-group, nav, header, footer { display: none !important; }
         .card { border: 1px solid #000 !important; box-shadow: none !important; }
         body { background: white !important; }
     }
 </style>
+
+<script>
+    async function updateStatus(status) {
+        const id = '@Model.Id';
+        try {
+            const form = new URLSearchParams();
+            form.append('id', id);
+            form.append('status', status);
+
+            const resp = await fetch('/Orders/UpdateStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: form.toString()
+            });
+            if (resp.ok) {
+                location.reload();
+            } else if (resp.status === 403) {
+                alert('Permesso negato: operazione riservata agli amministratori.');
+            } else {
+                const txt = await resp.text();
+                alert('Errore aggiornamento stato: ' + resp.status + '\n' + txt);
+            }
+        } catch (ex) {
+            console.error(ex);
+            alert('Errore di rete durante l\'aggiornamento dello stato.');
+        }
+    }
+</script>
