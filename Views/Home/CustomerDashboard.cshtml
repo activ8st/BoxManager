@@ -1,0 +1,172 @@
+@model BoxManager.Models.Customer
+@{
+    ViewData["Title"] = "Dashboard";
+    
+    var ordiniTotali = Model.Orders.Count;
+    var inProduzione = Model.Orders.Count(o => o.Status == BoxManager.Models.OrderStatus.Pending || o.Status == BoxManager.Models.OrderStatus.InProduction);
+    var completati = Model.Orders.Count(o => o.Status == BoxManager.Models.OrderStatus.Completed || o.Status == BoxManager.Models.OrderStatus.Delivered);
+}
+
+<style>
+    .customer-dashboard-card {
+        border-radius: 12px;
+        border: 1px solid #eaeaea;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 500;
+        color: #1f2937;
+    }
+    .stat-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+    }
+    .info-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.2rem;
+    }
+    .info-value {
+        font-size: 0.95rem;
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 1.25rem;
+    }
+</style>
+
+<!-- Top Box: Header -->
+<div class="customer-dashboard-card p-4 mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">@Model.BusinessName</h2>
+        <div class="text-muted d-flex align-items-center">
+            <span class="me-2">C@Model.Id.ToString("D3")</span> &bull; 
+            <span class="ms-2">Cliente dal 10/03/2023</span>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm">
+            <i class="bi bi-pencil me-2"></i>Modifica
+        </button>
+    </div>
+</div>
+
+<!-- Middle Box: 3 Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="customer-dashboard-card p-4 h-100">
+            <div class="stat-label">Ordini totali</div>
+            <div class="stat-number">@ordiniTotali</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="customer-dashboard-card p-4 h-100">
+            <div class="stat-label">In produzione</div>
+            <div class="stat-number">@inProduzione</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="customer-dashboard-card p-4 h-100">
+            <div class="stat-label">Completati</div>
+            <div class="stat-number">@completati</div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Box: Info & Recent Orders -->
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="customer-dashboard-card p-4 h-100">
+            <h5 class="fw-bold mb-4" style="color: #1f2937;">Informazioni Cliente</h5>
+            
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="info-label"><i class="bi bi-person me-1"></i> Referente</div>
+                    <div class="info-value">@Model.ContactPerson</div>
+                    
+                    <div class="info-label"><i class="bi bi-envelope me-1"></i> Email</div>
+                    <div class="info-value">@Model.Email</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="info-label"><i class="bi bi-telephone me-1"></i> Telefono</div>
+                    <div class="info-value">@Model.Phone</div>
+                    
+                    <div class="info-label">Partita IVA</div>
+                    <div class="info-value">@Model.VatNumber</div>
+                </div>
+            </div>
+            
+            <div class="info-label"><i class="bi bi-geo-alt me-1"></i> Indirizzo</div>
+            <div class="info-value">@Model.Address</div>
+            
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div class="info-label">Note</div>
+                <div class="info-value p-3 bg-light rounded text-muted" style="font-size: 0.85rem;">
+                    @Model.Notes
+                </div>
+            }
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="customer-dashboard-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0" style="color: #1f2937;">Ultimi Ordini</h5>
+                <a asp-controller="Orders" asp-action="Index" class="text-primary text-decoration-none small fw-medium">Vedi tutti &rarr;</a>
+            </div>
+            
+            @if (Model.Orders.Any())
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var order in Model.Orders.OrderByDescending(o => o.OrderDate).Take(5))
+                    {
+                        var statusColorClass = order.Status switch
+                        {
+                            BoxManager.Models.OrderStatus.Pending => "bg-warning text-dark",
+                            BoxManager.Models.OrderStatus.InProduction => "bg-warning text-dark",
+                            BoxManager.Models.OrderStatus.Completed => "bg-primary text-white",
+                            BoxManager.Models.OrderStatus.Delivered => "bg-primary text-white",
+                            BoxManager.Models.OrderStatus.Cancelled => "bg-danger text-white",
+                            _ => "bg-secondary text-white"
+                        };
+                        
+                        var statusName = order.Status switch
+                        {
+                            BoxManager.Models.OrderStatus.Pending => "In attesa",
+                            BoxManager.Models.OrderStatus.InProduction => "In corso",
+                            BoxManager.Models.OrderStatus.Completed => "Pronto",
+                            BoxManager.Models.OrderStatus.Delivered => "Consegnato",
+                            BoxManager.Models.OrderStatus.Cancelled => "Annullato",
+                            _ => order.Status.ToString()
+                        };
+
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <div class="fw-bold text-dark" style="font-size: 0.9rem;">ORD-2026-@order.Id.ToString("D3")</div>
+                                <div class="text-muted" style="font-size: 0.8rem;">@order.BoxCode</div>
+                            </div>
+                            <div class="text-muted" style="font-size: 0.85rem;">
+                                @order.OrderDate.ToString("dd/MM/yyyy")
+                            </div>
+                            <div>
+                                <span class="badge @statusColorClass" style="font-weight: 500; font-size: 0.75rem;">@statusName</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-muted py-5">
+                    Nessun ordine recente
+                </div>
+            }
+        </div>
+    </div>
+</div>

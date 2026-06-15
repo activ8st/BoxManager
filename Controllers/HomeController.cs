@@ -26,6 +26,18 @@ namespace BoxManager.Controllers
         {
             if (User.IsInRole("Customer"))
             {
+                var customerIdClaim = User.FindFirst("CustomerId")?.Value;
+                if (customerIdClaim != null && int.TryParse(customerIdClaim, out int customerId))
+                {
+                    var customer = await _context.Customers
+                        .Include(c => c.Orders)
+                        .FirstOrDefaultAsync(c => c.Id == customerId);
+                        
+                    if (customer != null)
+                    {
+                        return View("CustomerDashboard", customer);
+                    }
+                }
                 return RedirectToAction("Index", "Orders");
             }
 
