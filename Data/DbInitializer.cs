@@ -68,20 +68,20 @@ namespace BoxManager.Data
                 var sheet = new TechnicalSheet
                 {
                     OrderId = o.Id,
-                    Length = 30 + (i % 3) * 5,
-                    Width = 20 + (i % 2) * 5,
-                    Height = 15 + (i % 4) * 2,
-                    CardboardType = "Ondulato",
-                    WaveType = (i % 2 == 0) ? "B" : "BC",
-                    FefcoCode = o.BoxCode.StartsWith("Fefco") ? o.BoxCode.Replace("Fefco ", "0") : "0201",
+                    Length = 300 + (i % 3) * 50, // 300, 350, 400 mm
+                    Width = 200 + (i % 2) * 50,  // 200, 250 mm
+                    Height = 150 + (i % 4) * 20, // 150, 170, 190, 210 mm
+                    CardboardType = (i % 2 == 0) ? "Cartone Ondulato Singola Onda" : "Cartone Ondulato Doppia Onda",
+                    WaveType = (i % 2 == 0) ? "B (Onda Bassa)" : "BC (Doppia Onda)",
+                    FefcoCode = o.BoxCode.StartsWith("SCT-") ? "0201" : o.BoxCode.Replace("Fefco ", "0"),
                     HasPrinting = (i % 2 == 0),
                     ColorCount = (i % 2 == 0) ? 2 : 0,
                     ColorCodes = (i % 2 == 0) ? "#000000, #FFFFFF" : null,
                     PrintingNotes = (i % 2 == 0) ? "Stampa fronte/retro, controllo cromia in fase di prova." : null,
                     CustomerLogoPath = "",
-                    PrintingType = (i % 2 == 0) ? "Flexo" : "N/A",
+                    PrintingType = (i % 2 == 0) ? "Flexografia Alto Basso" : "Nessuna",
                     UnitPrice = o.TotalPrice / o.Quantity,
-                    Discount = 0
+                    Discount = (i % 5 == 0) ? 5 : 0
                 };
                 context.TechnicalSheets.Add(sheet);
             }
