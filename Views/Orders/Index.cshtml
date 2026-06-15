@@ -60,7 +60,7 @@
                         <th>Codice Scatola</th>
                         <th>Codice Fefco</th>
                         <th>Data</th>
-                        <th>Stato</th>
+                        @if (!User.IsInRole("Admin")) { <th>Stato</th> }
                         <th class="pe-4 text-end">Azioni</th>
                     </tr>
                 </thead>
@@ -87,41 +87,27 @@
                         };
 
                         <tr id="order-row-@item.Id">
-                            <td class="ps-4 fw-medium text-secondary" style="font-size: 0.9rem;">ORD-2026-@item.Id.ToString("D3")</td>
+                            <td class="ps-4 fw-bold text-dark" style="font-size: 0.9rem;">ORD-2026-@item.Id.ToString("D3")</td>
                             @if (User.IsInRole("Admin")) { <td class="fw-bold text-dark">@item.Customer.BusinessName</td> }
-                            <td class="text-dark fw-medium" style="font-size: 0.9rem;">@item.Referente</td>
-                            <td class="text-secondary" style="font-size: 0.9rem;">@item.BoxCode</td>
-                            <td class="text-secondary" style="font-size: 0.9rem;">Fefco @((item.Id % 5) + 1)</td>
-                            <td style="font-size: 0.9rem;" class="text-secondary">@item.OrderDate.ToString("dd/MM/yy")</td>
-                            <td>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <select class="form-select form-select-sm status-selector py-1 px-2 border" 
-                                            data-order-id="@item.Id"
-                                            onchange="updateOrderStatus(@item.Id, this.value)"
-                                            style="width: 130px; font-size: 0.85rem; border-radius: 0.375rem;">
-                                        @foreach (var status in Enum.GetValues(typeof(BoxManager.Models.OrderStatus)))
+                            <td class="text-muted" style="font-size: 0.85rem;">@item.Referente</td>
+                            <td class="text-muted" style="font-size: 0.85rem;">@item.BoxCode</td>
+                            <td class="text-muted" style="font-size: 0.85rem;">Fefco @((item.Id % 5) + 1)</td>
+                            <td class="text-muted" style="font-size: 0.85rem;">@item.OrderDate.ToString("dd/MM/yyyy")</td>
+                            @if (!User.IsInRole("Admin"))
+                            {
+                                <td>
+                                    @{
+                                        var statusStyle = item.Status switch
                                         {
-                                            var optName = status switch
-                                            {
-                                                BoxManager.Models.OrderStatus.Pending => "In attesa",
-                                                BoxManager.Models.OrderStatus.InProduction => "In produzione",
-                                                BoxManager.Models.OrderStatus.Completed => "Completato",
-                                                BoxManager.Models.OrderStatus.Delivered => "Consegnato",
-                                                BoxManager.Models.OrderStatus.Cancelled => "Annullato",
-                                                _ => status.ToString()
-                                            };
-                                            <!option value="@status" @(item.Status.ToString() == status.ToString() ? "selected" : "")>@optName</!option>
-                                        }
-                                    </select>
-                                }
-                                else
-                                {
-                                    <span style="font-size: 0.85rem; font-weight: 500;" class="text-dark">
-                                        <i class="bi bi-circle-fill @dotColor me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>@displayName
-                                    </span>
-                                }
-                            </td>
+                                            BoxManager.Models.OrderStatus.Completed => "background-color: #0D6EFD; color: white;",
+                                            BoxManager.Models.OrderStatus.Delivered => "background-color: #198754; color: white;",
+                                            BoxManager.Models.OrderStatus.Cancelled => "background-color: #dc3545; color: white;",
+                                            _ => "background-color: #6c757d; color: white;"
+                                        };
+                                    }
+                                    <span class="badge" style="font-weight: 500; font-size: 0.75rem; @statusStyle">@displayName</span>
+                                </td>
+                            }
                             <td class="pe-4 text-end">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border" title="Dettagli" style="border-radius: 0.375rem;"><i class="bi bi-file-earmark-text me-1"></i>Dettagli</a>
                             </td>

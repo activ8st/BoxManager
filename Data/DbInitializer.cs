@@ -47,12 +47,12 @@ namespace BoxManager.Data
                 new Order { CustomerId=6, OrderDate=new DateTime(2026, 3, 16), BoxCode="SCT-MOD-022", Quantity=500, TotalPrice=1100.00m, Status=OrderStatus.Completed, Referente="c.bianchi@outlook.it" },
                 new Order { CustomerId=1, OrderDate=new DateTime(2026, 1, 10), BoxCode="SCT-MOD-430", Quantity=4000, TotalPrice=9800.00m, Status=OrderStatus.Completed, Referente="c.bianchi@outlook.it" },
                 new Order { CustomerId=7, OrderDate=new DateTime(2024, 1, 8), BoxCode="SCT-MEV-039", Quantity=300, TotalPrice=950.00m, Status=OrderStatus.Cancelled, Referente="m.basini@outlook.it" },
-                new Order { CustomerId=8, OrderDate=new DateTime(2026, 1, 2), BoxCode="SCT-MEV-133", Quantity=1000, TotalPrice=2500.00m, Status=OrderStatus.Pending, Referente="m.basini@outlook.it" },
+                new Order { CustomerId=8, OrderDate=new DateTime(2026, 1, 2), BoxCode="SCT-MEV-133", Quantity=1000, TotalPrice=2500.00m, Status=OrderStatus.Completed, Referente="v.ferrari@outlook.com" },
                 new Order { CustomerId=2, OrderDate=new DateTime(2026, 1, 1), BoxCode="SCT-MOD-007", Quantity=5000, TotalPrice=12500.00m, Status=OrderStatus.InProduction, Referente="e.tosoni@outlook.it" },
                 new Order { CustomerId=4, OrderDate=new DateTime(2025, 12, 2), BoxCode="SCT-MOD-091", Quantity=1200, TotalPrice=2800.00m, Status=OrderStatus.InProduction, Referente="c.bianchi@outlook.it" },
                 new Order { CustomerId=5, OrderDate=new DateTime(2025, 11, 23), BoxCode="SCT-MEV-411", Quantity=2000, TotalPrice=4000.00m, Status=OrderStatus.Pending, Referente="c.bianchi@outlook.it" },
                 new Order { CustomerId=6, OrderDate=new DateTime(2026, 1, 8), BoxCode="SCT-MOD-015", Quantity=800, TotalPrice=1600.00m, Status=OrderStatus.Pending, Referente="e.tosoni@outlook.it" },
-                new Order { CustomerId=8, OrderDate=new DateTime(2026, 1, 1), BoxCode="SCT-MOD-007", Quantity=1500, TotalPrice=3500.00m, Status=OrderStatus.InProduction, Referente="v.ferrari@outlook.com" }
+                new Order { CustomerId=8, OrderDate=new DateTime(2026, 1, 1), BoxCode="SCT-MOD-007", Quantity=1500, TotalPrice=3500.00m, Status=OrderStatus.Completed, Referente="v.ferrari@outlook.com" }
             };
 
             foreach (Order o in orders)
