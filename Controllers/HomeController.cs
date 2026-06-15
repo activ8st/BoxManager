@@ -6,9 +6,11 @@ using BoxManager.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BoxManager.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +24,11 @@ namespace BoxManager.Controllers
 
         public async Task<IActionResult> Index()
         {
+            if (User.IsInRole("Customer"))
+            {
+                return RedirectToAction("Index", "Orders");
+            }
+
             var viewModel = new DashboardViewModel
             {
                 TotalOrders = await _context.Orders.CountAsync(),

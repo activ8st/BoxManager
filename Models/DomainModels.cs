@@ -9,12 +9,14 @@ namespace BoxManager.Models
     {
         [Display(Name = "In attesa")]
         Pending,
-        [Display(Name = "In produzione")]
+        [Display(Name = "In corso")]
         InProduction,
-        [Display(Name = "Completato")]
+        [Display(Name = "Pronto")]
         Completed,
         [Display(Name = "Consegnato")]
-        Delivered
+        Delivered,
+        [Display(Name = "Annullato")]
+        Cancelled
     }
 
     public class Customer
@@ -49,6 +51,9 @@ namespace BoxManager.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
+
+        [Display(Name = "Referente")]
+        public string Referente { get; set; }
 
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }

@@ -1,6 +1,56 @@
 @inject BoxManager.Data.ApplicationDbContext DbContext
 @{
-    var pendingOrdersCount = DbContext.Orders.Count(o => o.Status == BoxManager.Models.OrderStatus.Pending || o.Status == BoxManager.Models.OrderStatus.InProduction);
+    int pendingOrdersCount = 0;
+    string userInitials = "AM";
+    string userRoleDisplayName = "Venditore";
+    
+    if (User.Identity.IsAuthenticated)
+    {
+        var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+        var ordersQuery = DbContext.Orders.AsQueryable();
+        
+        if (role == "Customer")
+        {
+            userRoleDisplayName = "Cliente";
+            var customerIdClaim = User.FindFirst("CustomerId")?.Value;
+            if (customerIdClaim != null && int.TryParse(customerIdClaim, out int customerId))
+            {
+                ordersQuery = ordersQuery.Where(o => o.CustomerId == customerId);
+            }
+        }
+        else
+        {
+            userRoleDisplayName = "Fornitore";
+        }
+        
+        pendingOrdersCount = ordersQuery.Count(o => o.Status == BoxManager.Models.OrderStatus.Pending || o.Status == BoxManager.Models.OrderStatus.InProduction);
+        
+        var name = User.Identity.Name ?? "";
+        if (name == "Admin")
+        {
+            userInitials = "AM";
+        }
+        else
+        {
+            var parts = name.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 2)
+            {
+                userInitials = (parts[0][0].ToString() + parts[1][0].ToString()).ToUpper();
+            }
+            else if (parts.Length == 1 && parts[0].Length >= 2)
+            {
+                userInitials = parts[0].Substring(0, 2).ToUpper();
+            }
+            else if (parts.Length == 1 && parts[0].Length == 1)
+            {
+                userInitials = parts[0].ToUpper();
+            }
+            else
+            {
+                userInitials = "CL";
+            }
+        }
+    }
 }
 <!DOCTYPE html>
 <html lang="it">
@@ -34,24 +84,45 @@
         <!-- Mobile Navigation Menu (Collapsible) -->
         <div class="collapse d-md-none px-3 py-2" id="mobileMenu" style="background-color: var(--sidebar-bg); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
             <nav class="nav nav-pills flex-column sidebar-nav p-0">
-                <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                    <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
-                    <i class="bi bi-chevron-right small opacity-50"></i>
-                </a>
-                <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
-                    <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
-                    <i class="bi bi-chevron-right small opacity-50"></i>
-                </a>
-                <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
-                    <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
-                    <span class="d-flex align-items-center">
-                        @if (pendingOrdersCount > 0)
-                        {
-                            <span class="badge bg-warning text-dark me-2">@pendingOrdersCount</span>
-                        }
-                        <i class="bi bi-chevron-right small opacity-50"></i>
-                    </span>
-                </a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                            <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </a>
+                        <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                            <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </a>
+                    }
+                    <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
+                        <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                        <span class="d-flex align-items-center">
+                            @if (pendingOrdersCount > 0)
+                            {
+                                <span class="badge bg-warning text-dark me-2">@pendingOrdersCount</span>
+                            }
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50" style="pointer-events: none;">
+                        <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                        <i class="bi bi-chevron-right small opacity-30"></i>
+                    </a>
+                    <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50" style="pointer-events: none;">
+                        <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                        <i class="bi bi-chevron-right small opacity-30"></i>
+                    </a>
+                    <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50" style="pointer-events: none;">
+                        <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                        <i class="bi bi-chevron-right small opacity-30"></i>
+                    </a>
+                }
             </nav>
         </div>
 
@@ -68,32 +139,67 @@
             </div>
             
             <div class="sidebar-nav">
-                <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                    <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
-                    <i class="bi bi-chevron-right small opacity-50"></i>
-                </a>
-                <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
-                    <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
-                    <i class="bi bi-chevron-right small opacity-50"></i>
-                </a>
-                <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
-                    <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
-                    <span class="d-flex align-items-center">
-                        @if (pendingOrdersCount > 0)
-                        {
-                            <span class="badge bg-warning text-dark me-2">@pendingOrdersCount</span>
-                        }
-                        <i class="bi bi-chevron-right small opacity-50"></i>
-                    </span>
-                </a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                            <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </a>
+                        <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                            <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </a>
+                    }
+                    <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
+                        <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                        <span class="d-flex align-items-center">
+                            @if (pendingOrdersCount > 0)
+                            {
+                                <span class="badge bg-warning text-dark me-2">@pendingOrdersCount</span>
+                            }
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50 mb-2" style="pointer-events: none;">
+                        <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                        <i class="bi bi-chevron-right small opacity-30"></i>
+                    </a>
+                    <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50 mb-2" style="pointer-events: none;">
+                        <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                        <i class="bi bi-chevron-right small opacity-30"></i>
+                    </a>
+                    <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50 mb-2" style="pointer-events: none;">
+                        <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                        <i class="bi bi-chevron-right small opacity-30"></i>
+                    </a>
+                }
             </div>
             
             <div class="sidebar-profile">
-                <div class="avatar">AM</div>
-                <div>
-                    <div class="fw-bold text-white" style="font-size: 0.9rem;">Admin</div>
-                    <div class="text-muted" style="font-size: 0.75rem;">Venditore</div>
-                </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="avatar">@userInitials</div>
+                    <div class="flex-grow-1 overflow-hidden me-2">
+                        <div class="fw-bold text-white text-truncate" style="font-size: 0.85rem;" title="@User.Identity.Name">@User.Identity.Name</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">@userRoleDisplayName</div>
+                    </div>
+                    <a class="btn p-0 text-white-50 hover-white" asp-controller="Account" asp-action="Logout" title="Disconnetti">
+                        <i class="bi bi-box-arrow-left fs-5"></i>
+                    </a>
+                }
+                else
+                {
+                    <div class="avatar opacity-50 bg-secondary">--</div>
+                    <div>
+                        <div class="fw-bold text-white opacity-50" style="font-size: 0.85rem;">Non Connesso</div>
+                        <div class="text-muted opacity-50" style="font-size: 0.75rem;">Accedi per continuare</div>
+                    </div>
+                }
             </div>
         </aside>
 
