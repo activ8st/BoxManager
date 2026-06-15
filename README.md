@@ -42,7 +42,7 @@ Al primo avvio, l'applicativo genera automaticamente il database locale `BoxMana
 
 Per la valutazione del progetto, il sistema di login permette l'accesso inserendo una **qualsiasi password** in combinazione con i seguenti account:
 - **Vista Amministratore (Controllo Totale):** `admin@boxmanager.it`
-- **Vista Cliente (Sola Lettura Filtrata):** `c.bianchi@outlook.it` (oppure `v.ferrari@outlook.com`)
+- **Vista Cliente (Sola Lettura Filtrata):** `c.bianchi@outlook.it` 
 
 
 ## Conclusioni
