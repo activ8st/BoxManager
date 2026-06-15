@@ -22,7 +22,7 @@ namespace BoxManager.Data
                 new Customer { BusinessName="Elettronica Furlan S.r.l.", VatNumber="07654312890", Address="Indirizzo 5", Email="magazzino@furlan-el.it", Phone="049 876543", ContactPerson="Marco Basini", Notes="" },
                 new Customer { BusinessName="Cosmetici Bella Donna", VatNumber="05678901234", Address="Indirizzo 5", Email="packaging@belladonna.it", Phone="055 321654", ContactPerson="Carlo Bianchi", Notes="" },
                 new Customer { BusinessName="Ceramiche Artigianali Veneziane", VatNumber="06543210987", Address="Indirizzo 4", Email="spedizioni@ceramichevenezia.com", Phone="041 555666", ContactPerson="Marco Basini", Notes="" },
-                new Customer { BusinessName="Abbigliamento Moda Nord S.r.l.", VatNumber="02109876543", Address="Indirizzo 1", Email="acquisti@modanord.it", Phone="011 444555", ContactPerson="Elena Andreoli", Notes="" }
+                new Customer { BusinessName="Abbigliamento Moda Nord S.r.l.", VatNumber="02109876543", Address="Indirizzo 1", Email="acquisti@modanord.it", Phone="011 444555", ContactPerson="Valerio Ferrari", Notes="" }
             };
 
             foreach (Customer c in customers)
@@ -52,7 +52,7 @@ namespace BoxManager.Data
                 new Order { CustomerId=4, OrderDate=new DateTime(2025, 12, 2), BoxCode="SCT-MOD-091", Quantity=1200, TotalPrice=2800.00m, Status=OrderStatus.InProduction, Referente="c.bianchi@outlook.it" },
                 new Order { CustomerId=5, OrderDate=new DateTime(2025, 11, 23), BoxCode="SCT-MEV-411", Quantity=2000, TotalPrice=4000.00m, Status=OrderStatus.Pending, Referente="c.bianchi@outlook.it" },
                 new Order { CustomerId=6, OrderDate=new DateTime(2026, 1, 8), BoxCode="SCT-MOD-015", Quantity=800, TotalPrice=1600.00m, Status=OrderStatus.Pending, Referente="e.tosoni@outlook.it" },
-                new Order { CustomerId=8, OrderDate=new DateTime(2026, 1, 1), BoxCode="SCT-MOD-007", Quantity=1500, TotalPrice=3500.00m, Status=OrderStatus.InProduction, Referente="e.andreoli@outlook.it" }
+                new Order { CustomerId=8, OrderDate=new DateTime(2026, 1, 1), BoxCode="SCT-MOD-007", Quantity=1500, TotalPrice=3500.00m, Status=OrderStatus.InProduction, Referente="v.ferrari@outlook.com" }
             };
 
             foreach (Order o in orders)
