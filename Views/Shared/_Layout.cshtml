@@ -1,3 +1,7 @@
+@inject BoxManager.Data.ApplicationDbContext DbContext
+@{
+    var pendingOrdersCount = DbContext.Orders.Count(o => o.Status == BoxManager.Models.OrderStatus.Pending || o.Status == BoxManager.Models.OrderStatus.InProduction);
+}
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -15,47 +19,101 @@
         .status-badge { font-size: 0.85rem; }
     </style>
 </head>
-<body class="bg-light d-flex flex-column min-vh-100">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-box-seam me-2"></i>BoxManager
+<body class="bg-light">
+    <div class="app-wrapper">
+        <!-- Mobile Header Bar -->
+        <div class="mobile-header d-md-none d-flex justify-content-between align-items-center">
+            <a class="navbar-brand fw-bold text-white d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-box-seam me-2"></i>BoxManager
+            </a>
+            <button class="navbar-toggler btn text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-3"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation Menu (Collapsible) -->
+        <div class="collapse d-md-none px-3 py-2" id="mobileMenu" style="background-color: var(--sidebar-bg); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <nav class="nav nav-pills flex-column sidebar-nav p-0">
+                <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                    <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                    <i class="bi bi-chevron-right small opacity-50"></i>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Customers" asp-action="Index">Clienti</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Index">Ordini</a>
-                        </li>
-                    </ul>
+                <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                    <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                    <i class="bi bi-chevron-right small opacity-50"></i>
+                </a>
+                <a class="nav-link d-flex align-items-center justify-content-between mb-2 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
+                    <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                    <span class="d-flex align-items-center">
+                        @if (pendingOrdersCount > 0)
+                        {
+                            <span class="badge bg-warning text-dark me-2">@pendingOrdersCount</span>
+                        }
+                        <i class="bi bi-chevron-right small opacity-50"></i>
+                    </span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Desktop Sidebar -->
+        <aside class="app-sidebar d-none d-md-flex">
+            <div class="sidebar-brand d-flex align-items-center">
+                <div class="brand-icon bg-primary text-white d-flex align-items-center justify-content-center rounded me-3" style="width: 42px; height: 42px; font-size: 1.25rem; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-0" style="letter-spacing: 0.5px;">BoxManager</h5>
+                    <small class="text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px; font-weight: 600;">Gestionale Scatole</small>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+            
+            <div class="sidebar-nav">
+                <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                    <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                    <i class="bi bi-chevron-right small opacity-50"></i>
+                </a>
+                <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                    <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                    <i class="bi bi-chevron-right small opacity-50"></i>
+                </a>
+                <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
+                    <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                    <span class="d-flex align-items-center">
+                        @if (pendingOrdersCount > 0)
+                        {
+                            <span class="badge bg-warning text-dark me-2">@pendingOrdersCount</span>
+                        }
+                        <i class="bi bi-chevron-right small opacity-50"></i>
+                    </span>
+                </a>
+            </div>
+            
+            <div class="sidebar-profile">
+                <div class="avatar">AM</div>
+                <div>
+                    <div class="fw-bold text-white" style="font-size: 0.9rem;">Admin</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">Venditore</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <main role="main" class="content-body">
+                @RenderBody()
+            </main>
+            <footer class="border-top footer text-muted bg-white py-3 px-4 mt-auto">
+                <div class="container-fluid p-0">
+                    &copy; 2026 - <strong>BoxManager</strong> - Progetto Laboratorio IUM - Unibo Cesena - Niki Hammond & Silvia Busti
+                </div>
+            </footer>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted bg-white py-3 mt-auto">
-        <div class="container">
-            &copy; 2026 - <strong>BoxManager</strong> - Progetto Laboratorio IUM - Unibo Cesena - Niki Hammond & Silvia Busti 
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
