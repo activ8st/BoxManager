@@ -40,7 +40,7 @@
     }
 </style>
 
-<!-- Top Box: Header -->
+<!-- Top Box: Header — tasto Modifica solo per Admin -->
 <div class="customer-dashboard-card p-4 mb-4 d-flex justify-content-between align-items-center">
     <div>
         <h2 class="fw-bold text-dark mb-1">@Model.BusinessName</h2>
@@ -49,22 +49,13 @@
             <span class="ms-2">Cliente dal 10/03/2023</span>
         </div>
     </div>
-    <div>
-        @if (User.IsInRole("Admin"))
-        {
-            <a asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.Id"
-               class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm text-decoration-none">
-                <i class="bi bi-pencil me-2"></i>Modifica
-            </a>
-        }
-        else if (User.IsInRole("Customer"))
-        {
-            <a asp-controller="Customers" asp-action="EditProfile"
-               class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm text-decoration-none">
-                <i class="bi bi-pencil me-2"></i>Modifica
-            </a>
-        }
-    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.Id"
+           class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm text-decoration-none">
+            <i class="bi bi-pencil me-2"></i>Modifica
+        </a>
+    }
 </div>
 
 <!-- Middle Box: 3 Stats -->
@@ -93,7 +84,18 @@
 <div class="row g-4">
     <div class="col-lg-6">
         <div class="customer-dashboard-card p-4 h-100">
-            <h5 class="fw-bold mb-4" style="color: #1f2937;">Informazioni Cliente</h5>
+            <!-- Header box: tasto Modifica qui solo per il Cliente -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0" style="color: #1f2937;">Informazioni Cliente</h5>
+                @if (User.IsInRole("Customer"))
+                {
+                    <a asp-controller="Customers" asp-action="EditProfile"
+                       class="btn btn-light border bg-white rounded-pill px-3 fw-medium text-secondary shadow-sm text-decoration-none"
+                       style="font-size: 0.85rem;">
+                        <i class="bi bi-pencil me-1"></i>Modifica
+                    </a>
+                }
+            </div>
             
             <div class="row">
                 <div class="col-sm-6">

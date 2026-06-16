@@ -3,6 +3,7 @@
     ViewData["Title"] = User.IsInRole("Customer") ? "Modifica Profilo" : "Modifica Cliente";
     var formAction = User.IsInRole("Customer") ? "EditProfile" : "Edit";
     var cancelUrl = User.IsInRole("Customer") ? Url.Action("Index", "Home") : Url.Action("Details", new { id = Model.Id });
+    var isCustomer = User.IsInRole("Customer");
 }
 
 <div class="container">
@@ -21,47 +22,80 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+
+                            <!-- Ragione Sociale: sola lettura per il cliente -->
                             <div class="col-md-12 mb-3">
                                 <label asp-for="BusinessName" class="form-label">Ragione Sociale</label>
-                                <input asp-for="BusinessName" class="form-control" />
+                                @if (isCustomer)
+                                {
+                                    <input asp-for="BusinessName" class="form-control bg-light" disabled="disabled" />
+                                    <input type="hidden" asp-for="BusinessName" />
+                                }
+                                else
+                                {
+                                    <input asp-for="BusinessName" class="form-control" />
+                                }
                                 <span asp-validation-for="BusinessName" class="text-danger small"></span>
                             </div>
 
+                            <!-- P.IVA: sola lettura per il cliente -->
                             <div class="col-md-6 mb-3">
                                 <label asp-for="VatNumber" class="form-label">Partita IVA</label>
-                                <input asp-for="VatNumber" class="form-control" />
+                                @if (isCustomer)
+                                {
+                                    <input asp-for="VatNumber" class="form-control bg-light" disabled="disabled" />
+                                    <input type="hidden" asp-for="VatNumber" />
+                                }
+                                else
+                                {
+                                    <input asp-for="VatNumber" class="form-control" />
+                                }
                                 <span asp-validation-for="VatNumber" class="text-danger small"></span>
                             </div>
 
+                            <!-- Referente: modificabile -->
                             <div class="col-md-6 mb-3">
                                 <label asp-for="ContactPerson" class="form-label">Referente</label>
                                 <input asp-for="ContactPerson" class="form-control" />
                                 <span asp-validation-for="ContactPerson" class="text-danger small"></span>
                             </div>
 
+                            <!-- Email: modificabile -->
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Email" class="form-label">Email</label>
                                 <input asp-for="Email" class="form-control" type="email" />
                                 <span asp-validation-for="Email" class="text-danger small"></span>
                             </div>
 
+                            <!-- Telefono: modificabile -->
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Phone" class="form-label">Telefono</label>
                                 <input asp-for="Phone" class="form-control" />
                                 <span asp-validation-for="Phone" class="text-danger small"></span>
                             </div>
 
+                            <!-- Indirizzo: modificabile -->
                             <div class="col-md-12 mb-3">
                                 <label asp-for="Address" class="form-label">Indirizzo</label>
                                 <input asp-for="Address" class="form-control" />
                                 <span asp-validation-for="Address" class="text-danger small"></span>
                             </div>
 
+                            <!-- Note: sola lettura per il cliente -->
                             <div class="col-md-12 mb-0">
                                 <label asp-for="Notes" class="form-label">Note</label>
-                                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                                @if (isCustomer)
+                                {
+                                    <textarea asp-for="Notes" class="form-control bg-light" rows="3" disabled="disabled"></textarea>
+                                    <input type="hidden" asp-for="Notes" />
+                                }
+                                else
+                                {
+                                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                                }
                                 <span asp-validation-for="Notes" class="text-danger small"></span>
                             </div>
+
                         </div>
                     </div>
                 </div>
