@@ -40,9 +40,15 @@ L'esecuzione in ambiente locale richiede l'installazione del `.NET SDK`.
 
 Al primo avvio, l'applicativo genera automaticamente il database locale `BoxManager.db` e inserisce i dati di test preconfigurati.
 
-Per la valutazione del progetto, il sistema di login permette l'accesso inserendo una **qualsiasi password** in combinazione con i seguenti account:
-- **Vista Amministratore (Controllo Totale):** `admin@boxmanager.it`
-- **Vista Cliente (Sola Lettura Filtrata):** `c.bianchi@outlook.it` 
+Per la valutazione del progetto, a seguito dei recenti aggiornamenti di sicurezza integrati (merge di Silvia), il sistema di login richiede le seguenti credenziali specifiche:
+
+- **Vista Amministratore (Controllo Totale):**
+  - Email: `admin@boxmanager.it`
+  - Password: `Esame2026admin`
+
+- **Vista Cliente (Sola Lettura Filtrata):**
+  - Email: `c.bianchi@outlook.it` *(oppure qualsiasi altra email di un cliente simulato, es. `l.morosini@outlook.com`)*
+  - Password: `Esame2026client` 
 
 
 ## Conclusioni

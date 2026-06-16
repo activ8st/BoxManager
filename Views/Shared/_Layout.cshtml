@@ -58,6 +58,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BoxManager</title>
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme');
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -192,6 +200,9 @@
                         <div class="fw-bold text-white text-truncate" style="font-size: 0.85rem;" title="@User.Identity?.Name">@User.Identity?.Name</div>
                         <div class="text-muted" style="font-size: 0.75rem;">@userRoleDisplayName</div>
                     </div>
+                    <a class="btn p-0 text-white-50 hover-white me-3 theme-toggle-btn" title="Cambia Tema">
+                        <i class="bi bi-moon fs-5"></i>
+                    </a>
                     <a class="btn p-0 text-white-50 hover-white" asp-controller="Account" asp-action="Logout" title="Disconnetti">
                         <i class="bi bi-box-arrow-left fs-5"></i>
                     </a>
@@ -202,6 +213,11 @@
                     <div>
                         <div class="fw-bold text-white opacity-50" style="font-size: 0.85rem;">Non Connesso</div>
                         <div class="text-muted opacity-50" style="font-size: 0.75rem;">Accedi per continuare</div>
+                    </div>
+                    <div class="ms-auto">
+                        <a class="btn p-0 text-white-50 hover-white theme-toggle-btn" title="Cambia Tema">
+                            <i class="bi bi-moon fs-5"></i>
+                        </a>
                     </div>
                 }
             </div>
@@ -223,6 +239,40 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toggles = document.querySelectorAll('.theme-toggle-btn');
+            function updateIcons() {
+                var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                toggles.forEach(function(toggle) {
+                    var icon = toggle.querySelector('i');
+                    if(icon) {
+                        if(isDark) {
+                            icon.classList.remove('bi-moon');
+                            icon.classList.add('bi-sun');
+                        } else {
+                            icon.classList.remove('bi-sun');
+                            icon.classList.add('bi-moon');
+                        }
+                    }
+                });
+            }
+            updateIcons();
+            toggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if(document.documentElement.getAttribute('data-theme') === 'dark') {
+                        document.documentElement.removeAttribute('data-theme');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                    updateIcons();
+                });
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

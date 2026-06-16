@@ -1,2 +1,36 @@
-﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    // Integrazione avanzata: jQuery Validation + Bootstrap 5
+    $(function () {
+        var defaultOptions = {
+            errorClass: 'is-invalid',
+            validClass: 'is-valid',
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass(errorClass).removeClass(validClass);
+                $(element).closest('.form-group, .mb-3').find('.text-danger').addClass('invalid-feedback').removeClass('valid-feedback');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass(errorClass).addClass(validClass);
+                $(element).closest('.form-group, .mb-3').find('.text-danger').removeClass('invalid-feedback').addClass('valid-feedback');
+            }
+        };
+
+        $.validator.setDefaults(defaultOptions);
+        $.validator.unobtrusive.options = {
+            errorClass: defaultOptions.errorClass,
+            validClass: defaultOptions.validClass,
+        };
+        
+        // Applica le opzioni a tutti i form già parsati
+        $('form').each(function () {
+            var validator = $.data(this, 'validator');
+            if (validator) {
+                validator.settings.highlight = defaultOptions.highlight;
+                validator.settings.unhighlight = defaultOptions.unhighlight;
+                validator.settings.errorClass = defaultOptions.errorClass;
+                validator.settings.validClass = defaultOptions.validClass;
+            }
+        });
+    });
+</script>
