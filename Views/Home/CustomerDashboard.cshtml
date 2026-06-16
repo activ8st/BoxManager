@@ -11,37 +11,32 @@
     .customer-dashboard-card {
         border-radius: 12px;
         border: 1px solid #eaeaea;
-        background-color: #fff;
         box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
     .stat-number {
         font-size: 2rem;
         font-weight: 500;
-        color: #1f2937;
     }
     .stat-label {
         font-size: 0.9rem;
         font-weight: 500;
-        color: #4b5563;
         margin-bottom: 0.5rem;
     }
     .info-label {
         font-size: 0.75rem;
-        color: #6b7280;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 0.2rem;
     }
     .info-value {
         font-size: 0.95rem;
-        color: #374151;
         font-weight: 500;
         margin-bottom: 1.25rem;
     }
 </style>
 
 <!-- Top Box: Header — tasto Modifica solo per Admin -->
-<div class="customer-dashboard-card p-4 mb-4 d-flex justify-content-between align-items-center">
+<div class="customer-dashboard-card bg-white p-4 mb-4 d-flex justify-content-between align-items-center">
     <div>
         <h2 class="fw-bold text-dark mb-1">@Model.BusinessName</h2>
         <div class="text-muted d-flex align-items-center">
@@ -61,21 +56,21 @@
 <!-- Middle Box: 3 Stats -->
 <div class="row g-3 mb-4">
     <div class="col-md-4">
-        <div class="customer-dashboard-card p-4 h-100">
-            <div class="stat-label">Ordini totali</div>
-            <div class="stat-number">@ordiniTotali</div>
+        <div class="customer-dashboard-card bg-white p-4 h-100">
+            <div class="stat-label text-muted">Ordini totali</div>
+            <div class="stat-number text-dark">@ordiniTotali</div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="customer-dashboard-card p-4 h-100">
-            <div class="stat-label">In produzione</div>
-            <div class="stat-number">@inProduzione</div>
+        <div class="customer-dashboard-card bg-white p-4 h-100">
+            <div class="stat-label text-muted">In produzione</div>
+            <div class="stat-number text-dark">@inProduzione</div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="customer-dashboard-card p-4 h-100">
-            <div class="stat-label">Completati</div>
-            <div class="stat-number">@completati</div>
+        <div class="customer-dashboard-card bg-white p-4 h-100">
+            <div class="stat-label text-muted">Completati</div>
+            <div class="stat-number text-dark">@completati</div>
         </div>
     </div>
 </div>
@@ -83,10 +78,10 @@
 <!-- Bottom Box: Info & Recent Orders -->
 <div class="row g-4">
     <div class="col-lg-6">
-        <div class="customer-dashboard-card p-4 h-100">
+        <div class="customer-dashboard-card bg-white p-4 h-100">
             <!-- Header box: tasto Modifica qui solo per il Cliente -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold mb-0" style="color: #1f2937;">Informazioni Cliente</h5>
+                <h5 class="fw-bold mb-0 text-dark">Informazioni Cliente</h5>
                 @if (User.IsInRole("Customer"))
                 {
                     <a asp-controller="Customers" asp-action="EditProfile"
@@ -99,27 +94,27 @@
             
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="info-label"><i class="bi bi-person me-1"></i> Referente</div>
-                    <div class="info-value">@Model.ContactPerson</div>
+                    <div class="info-label text-muted"><i class="bi bi-person me-1"></i> Referente</div>
+                    <div class="info-value text-dark">@Model.ContactPerson</div>
                     
-                    <div class="info-label"><i class="bi bi-envelope me-1"></i> Email</div>
-                    <div class="info-value">@Model.Email</div>
+                    <div class="info-label text-muted"><i class="bi bi-envelope me-1"></i> Email</div>
+                    <div class="info-value text-dark">@Model.Email</div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="info-label"><i class="bi bi-telephone me-1"></i> Telefono</div>
-                    <div class="info-value">@Model.Phone</div>
+                    <div class="info-label text-muted"><i class="bi bi-telephone me-1"></i> Telefono</div>
+                    <div class="info-value text-dark">@Model.Phone</div>
                     
-                    <div class="info-label">Partita IVA</div>
-                    <div class="info-value">@Model.VatNumber</div>
+                    <div class="info-label text-muted">Partita IVA</div>
+                    <div class="info-value text-dark">@Model.VatNumber</div>
                 </div>
             </div>
             
-            <div class="info-label"><i class="bi bi-geo-alt me-1"></i> Indirizzo</div>
-            <div class="info-value">@Model.Address</div>
+            <div class="info-label text-muted"><i class="bi bi-geo-alt me-1"></i> Indirizzo</div>
+            <div class="info-value text-dark">@Model.Address</div>
             
             @if (!string.IsNullOrEmpty(Model.Notes))
             {
-                <div class="info-label">Note</div>
+                <div class="info-label text-muted">Note</div>
                 <div class="info-value p-3 bg-light rounded text-muted" style="font-size: 0.85rem;">
                     @Model.Notes
                 </div>
@@ -128,9 +123,9 @@
     </div>
     
     <div class="col-lg-6">
-        <div class="customer-dashboard-card p-4 h-100">
+        <div class="customer-dashboard-card bg-white p-4 h-100">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold mb-0" style="color: #1f2937;">Ultimi Ordini</h5>
+                <h5 class="fw-bold mb-0 text-dark">Ultimi Ordini</h5>
                 <a asp-controller="Orders" asp-action="Index" class="text-primary text-decoration-none small fw-medium">Vedi tutti &rarr;</a>
             </div>
             
