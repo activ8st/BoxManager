@@ -11,6 +11,13 @@ TestResults/
 ## Rider
 .idea/
 
+
+##DBs
+*.db
+*.db-shm
+*.db-wal
+
+
 # NuGet
 *.nupkg
 project.lock.json
