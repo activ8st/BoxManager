@@ -25,3 +25,9 @@ packages/
 
 # Publish output
 /publish/
+
+
+# SQLite Database
+*.db
+*.db-shm
+*.db-wal
