@@ -14,6 +14,8 @@ html, body {
   background-color: var(--main-bg);
 }
 
+
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -366,22 +368,22 @@ html, body {
     color: #084298;
 }
 
-/* Completato — verde chiaro */
+/* Completato — verde medio */
 .order-status-badge--completed {
+    background-color: #a3cfbb;
+    color: #0a3622;
+}
+
+/* Consegnato — verde più scuro, stesso pattern */
+.order-status-badge--delivered {
     background-color: #d1e7dd;
     color: #0a3622;
 }
 
-/* Consegnato — verde scuro pieno */
-.order-status-badge--delivered {
-    background-color: #198754;
-    color: #ffffff;
-}
-
 /* Annullato — rosso */
 .order-status-badge--cancelled {
-    background-color: #f8d7da;
-    color: #842029;
+    background-color: #198754;
+    color: #ffffff;
 }
 
 /* =============================================
@@ -474,6 +476,11 @@ html[data-theme="dark"] .text-muted {
     color: var(--text-muted) !important;
 }
 
+html[data-theme="dark"] .info-label {
+    color: #ffffff !important;
+    opacity: 0.85;
+}
+
 html[data-theme="dark"] .border, 
 html[data-theme="dark"] .border-bottom, 
 html[data-theme="dark"] .border-top {
@@ -511,4 +518,14 @@ html[data-theme="dark"] .nav-tabs .nav-link.active {
     background-color: var(--card-bg) !important;
     color: var(--text-primary) !important;
     border-color: var(--border-color) var(--border-color) var(--card-bg) !important;
+}
+
+html[data-theme="dark"] .order-status-badge--completed {
+    background-color: #1a3d2b;
+    color: #a3cfbb;
+}
+
+html[data-theme="dark"] .order-status-badge--delivered {
+    background-color: #198754;
+    color: #ffffff;
 }
