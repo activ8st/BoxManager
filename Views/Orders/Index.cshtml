@@ -15,41 +15,47 @@
     }
 </div>
 
-<div class="d-flex flex-wrap gap-2 mb-4 align-items-center justify-content-between">
-    <!-- Status Filter Tabs -->
-    <div class="d-flex flex-wrap gap-2">
-        <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(string.IsNullOrEmpty(currentStatusFilter) ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders">
-            Tutti <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.TotalCount</span>
-        </a>
-        <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(currentStatusFilter == "Pending" ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders?statusFilter=Pending">
-            In attesa <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.PendingCount</span>
-        </a>
-        <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(currentStatusFilter == "InProduction" ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders?statusFilter=InProduction">
-            In produzione <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.InProductionCount</span>
-        </a>
-        <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(currentStatusFilter == "Completed" ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders?statusFilter=Completed">
-            Completato <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.CompletedCount</span>
-        </a>
-        <a class="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center @(currentStatusFilter == "Delivered" ? "btn-primary text-white shadow-sm" : "bg-white text-secondary border shadow-sm")" href="/Orders?statusFilter=Delivered">
-            Consegnato <span class="badge rounded-circle bg-light text-dark ms-2" style="font-size: 0.75rem; padding: 0.35em 0.6em;">@ViewBag.DeliveredCount</span>
-        </a>
-    </div>
-    
-    <!-- Search Box -->
-    <form asp-action="Index" method="get" class="d-flex align-items-center" style="max-width: 300px; width: 100%;">
-        @if (!string.IsNullOrEmpty(currentStatusFilter))
-        {
-            <input type="hidden" name="statusFilter" value="@currentStatusFilter" />
-        }
-        <div class="input-group input-group-sm bg-white rounded-3 border px-2 py-1 shadow-sm w-100 align-items-center">
-            <span class="input-group-text bg-transparent border-0 text-muted p-0 me-2"><i class="bi bi-search"></i></span>
-            <input type="text" name="searchString" class="form-control border-0 bg-transparent p-0" placeholder="Cerca ordine, cliente, cod..." value="@ViewBag.CurrentFilter" style="box-shadow: none; font-size: 0.85rem;" />
-        </div>
-    </form>
+<div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+    <!-- Status Filter Pills -->
+    <a class="filter-pill @(string.IsNullOrEmpty(currentStatusFilter) ? "filter-pill--active" : "")" href="/Orders">
+        Tutti
+        <span class="filter-pill__badge filter-pill__badge--all">@ViewBag.TotalCount</span>
+    </a>
+    <a class="filter-pill @(currentStatusFilter == "Pending" ? "filter-pill--active filter-pill--pending-active" : "filter-pill--pending")" href="/Orders?statusFilter=Pending">
+        In attesa
+        <span class="filter-pill__badge filter-pill__badge--pending">@ViewBag.PendingCount</span>
+    </a>
+    <a class="filter-pill @(currentStatusFilter == "InProduction" ? "filter-pill--active filter-pill--inproduction-active" : "filter-pill--inproduction")" href="/Orders?statusFilter=InProduction">
+        In produzione
+        <span class="filter-pill__badge filter-pill__badge--inproduction">@ViewBag.InProductionCount</span>
+    </a>
+    <a class="filter-pill @(currentStatusFilter == "Completed" ? "filter-pill--active filter-pill--completed-active" : "filter-pill--completed")" href="/Orders?statusFilter=Completed">
+        Completato
+        <span class="filter-pill__badge filter-pill__badge--completed">@ViewBag.CompletedCount</span>
+    </a>
+    <a class="filter-pill @(currentStatusFilter == "Delivered" ? "filter-pill--active filter-pill--delivered-active" : "filter-pill--delivered")" href="/Orders?statusFilter=Delivered">
+        Consegnato
+        <span class="filter-pill__badge filter-pill__badge--delivered">@ViewBag.DeliveredCount</span>
+    </a>
 </div>
 
 <div class="card shadow-sm border-0 rounded-3" id="ordersApp">
-    <div class="card-body p-0">
+    <div class="card-body">
+        <!-- Search Box — stesso stile della pagina Clienti -->
+        <form asp-action="Index" method="get" class="mb-4">
+            @if (!string.IsNullOrEmpty(currentStatusFilter))
+            {
+                <input type="hidden" name="statusFilter" value="@currentStatusFilter" />
+            }
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="pointer-events:none;"></i>
+                <input type="text"
+                       name="searchString"
+                       class="form-control ps-5"
+                       placeholder="Cerca per ordine, cliente, codice scatola..."
+                       value="@ViewBag.CurrentFilter" />
+            </div>
+        </form>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
@@ -60,8 +66,7 @@
                         <th>Codice Scatola</th>
                         <th>Codice Fefco</th>
                         <th>Data</th>
-                        @if (!User.IsInRole("Admin")) { <th>Stato</th> }
-                        <th class="pe-4 text-end">Azioni</th>
+                        <th>Stato</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,47 +74,33 @@
                     {
                         var displayName = item.Status switch
                         {
-                            BoxManager.Models.OrderStatus.Pending => "In attesa",
-                            BoxManager.Models.OrderStatus.InProduction => "In produzione",
-                            BoxManager.Models.OrderStatus.Completed => "Completato",
-                            BoxManager.Models.OrderStatus.Delivered => "Consegnato",
-                            BoxManager.Models.OrderStatus.Cancelled => "Annullato",
+                            BoxManager.Models.OrderStatus.Pending      => "In attesa",
+                            BoxManager.Models.OrderStatus.InProduction  => "In produzione",
+                            BoxManager.Models.OrderStatus.Completed     => "Completato",
+                            BoxManager.Models.OrderStatus.Delivered     => "Consegnato",
+                            BoxManager.Models.OrderStatus.Cancelled     => "Annullato",
                             _ => item.Status.ToString()
                         };
 
-                        var dotColor = item.Status switch
+                        var statusBadgeClass = item.Status switch
                         {
-                            BoxManager.Models.OrderStatus.Pending => "text-warning",
-                            BoxManager.Models.OrderStatus.InProduction => "text-success",
-                            BoxManager.Models.OrderStatus.Completed => "text-primary",
-                            BoxManager.Models.OrderStatus.Cancelled => "text-danger",
-                            _ => "text-secondary"
+                            BoxManager.Models.OrderStatus.Pending      => "order-status-badge order-status-badge--pending",
+                            BoxManager.Models.OrderStatus.InProduction  => "order-status-badge order-status-badge--inproduction",
+                            BoxManager.Models.OrderStatus.Completed     => "order-status-badge order-status-badge--completed",
+                            BoxManager.Models.OrderStatus.Delivered     => "order-status-badge order-status-badge--delivered",
+                            BoxManager.Models.OrderStatus.Cancelled     => "order-status-badge order-status-badge--cancelled",
+                            _ => "order-status-badge"
                         };
 
-                        <tr id="order-row-@item.Id">
+                        <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Orders", new { id = item.Id })'">
                             <td class="ps-4 fw-bold text-dark" style="font-size: 0.9rem;">ORD-2026-@item.Id.ToString("D3")</td>
                             @if (User.IsInRole("Admin")) { <td class="fw-bold text-dark">@item.Customer.BusinessName</td> }
                             <td class="text-muted" style="font-size: 0.85rem;">@item.Referente</td>
                             <td class="text-muted" style="font-size: 0.85rem;">@item.BoxCode</td>
                             <td class="text-muted" style="font-size: 0.85rem;">Fefco @((item.Id % 5) + 1)</td>
                             <td class="text-muted" style="font-size: 0.85rem;">@item.OrderDate.ToString("dd/MM/yyyy")</td>
-                            @if (!User.IsInRole("Admin"))
-                            {
-                                <td>
-                                    @{
-                                        var statusStyle = item.Status switch
-                                        {
-                                            BoxManager.Models.OrderStatus.Completed => "background-color: #0D6EFD; color: white;",
-                                            BoxManager.Models.OrderStatus.Delivered => "background-color: #198754; color: white;",
-                                            BoxManager.Models.OrderStatus.Cancelled => "background-color: #dc3545; color: white;",
-                                            _ => "background-color: #6c757d; color: white;"
-                                        };
-                                    }
-                                    <span class="badge" style="font-weight: 500; font-size: 0.75rem; @statusStyle">@displayName</span>
-                                </td>
-                            }
-                            <td class="pe-4 text-end">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border" title="Dettagli" style="border-radius: 0.375rem;"><i class="bi bi-file-earmark-text me-1"></i>Dettagli</a>
+                            <td>
+                                <span class="@statusBadgeClass">@displayName</span>
                             </td>
                         </tr>
                     }
@@ -132,14 +123,12 @@
                 selector.classList.add('is-valid');
                 setTimeout(() => selector.classList.remove('is-valid'), 2000);
             } else {
-                // Se non c'è il selettore (è un cliente), ricarichiamo la pagina per aggiornare il badge
                 window.location.reload();
             }
         });
 
         connection.on("ReceiveNewOrder", function (orderId) {
             console.log("Nuovo ordine ricevuto: " + orderId);
-            // Notifica real-time o reload della lista
             setTimeout(() => window.location.reload(), 1000);
         });
 
@@ -160,4 +149,3 @@
         }
     </script>
 }
-

@@ -217,3 +217,171 @@ html, body {
 .hover-white:hover {
   color: #ffffff !important;
 }
+
+/* =============================================
+   FILTER PILLS — Orders/Index
+   ============================================= */
+
+.filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid #dee2e6;
+    background-color: #ffffff;
+    color: #6b7280;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.filter-pill:hover {
+    text-decoration: none;
+    filter: brightness(0.96);
+}
+
+/* Badge numero dentro la pillola — base */
+.filter-pill__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    padding: 0 0.3rem;
+    border-radius: 50rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* === Stato: Tutti === */
+.filter-pill__badge--all {
+    background-color: #e9ecef;
+    color: #495057;
+}
+.filter-pill--active .filter-pill__badge--all {
+    background-color: rgba(255,255,255,0.25);
+    color: #ffffff;
+}
+.filter-pill--active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(13,110,253,0.25);
+}
+
+/* === Stato: In attesa (giallo/ambra) === */
+.filter-pill--pending {
+    border-color: #ffc107;
+    color: #856404;
+}
+.filter-pill__badge--pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+.filter-pill--pending-active {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+.filter-pill--pending-active .filter-pill__badge--pending {
+    background-color: rgba(0,0,0,0.12);
+    color: #212529;
+}
+
+/* === Stato: In produzione (verde) === */
+.filter-pill--inproduction {
+    border-color: #198754;
+    color: #198754;
+}
+.filter-pill__badge--inproduction {
+    background-color: #d1e7dd;
+    color: #0a3622;
+}
+.filter-pill--inproduction-active {
+    background-color: #198754;
+    border-color: #198754;
+    color: #ffffff;
+}
+.filter-pill--inproduction-active .filter-pill__badge--inproduction {
+    background-color: rgba(255,255,255,0.25);
+    color: #ffffff;
+}
+
+/* === Stato: Completato (blu) === */
+.filter-pill--completed {
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+.filter-pill__badge--completed {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+.filter-pill--completed-active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+}
+.filter-pill--completed-active .filter-pill__badge--completed {
+    background-color: rgba(255,255,255,0.25);
+    color: #ffffff;
+}
+
+/* === Stato: Consegnato (grigio/slate) === */
+.filter-pill--delivered {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+.filter-pill__badge--delivered {
+    background-color: #e9ecef;
+    color: #495057;
+}
+.filter-pill--delivered-active {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #ffffff;
+}
+.filter-pill--delivered-active .filter-pill__badge--delivered {
+    background-color: rgba(255,255,255,0.25);
+    color: #ffffff;
+}
+
+/* =============================================
+   STATUS BADGES — colonna Stato nella tabella
+   ============================================= */
+
+.order-status-badge {
+    display: inline-block;
+    padding: 0.3em 0.75em;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.order-status-badge--pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.order-status-badge--inproduction {
+    background-color: #d1e7dd;
+    color: #0a3622;
+}
+
+.order-status-badge--completed {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+.order-status-badge--delivered {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.order-status-badge--cancelled {
+    background-color: #f8d7da;
+    color: #842029;
+}
