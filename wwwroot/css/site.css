@@ -14,6 +14,8 @@ html, body {
   background-color: var(--main-bg);
 }
 
+
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -476,6 +478,11 @@ html[data-theme="dark"] .text-dark {
 
 html[data-theme="dark"] .text-muted {
     color: var(--text-muted) !important;
+}
+
+html[data-theme="dark"] .info-label {
+    color: #ffffff !important;
+    opacity: 0.85;
 }
 
 html[data-theme="dark"] .border, 
