@@ -368,13 +368,13 @@ html, body {
     color: #084298;
 }
 
-/* Completato — verde chiaro */
+/* Completato — verde scuro */
 .order-status-badge--completed {
     background-color: #d1e7dd;
     color: #0a3622;
 }
 
-/* Consegnato — verde scuro pieno */
+/* Consegnato — verde  pieno */
 .order-status-badge--delivered {
     background-color: #198754;
     color: #ffffff;
