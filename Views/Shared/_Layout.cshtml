@@ -23,7 +23,7 @@
             userRoleDisplayName = "Fornitore";
         }
         
-        pendingOrdersCount = ordersQuery.Count(o => o.Status == BoxManager.Models.OrderStatus.Pending || o.Status == BoxManager.Models.OrderStatus.InProduction);
+        pendingOrdersCount = ordersQuery.Count(o => o.Status == BoxManager.Models.OrderStatus.Pending);
         
         var name = User.Identity.Name ?? "";
         if (name == "Admin")
@@ -67,6 +67,8 @@
         .card-stat { border-left: 4px solid #808080 !important; transition: transform .2s; }
         .card-stat:hover { transform: translateY(-5px); }
         .status-badge { font-size: 0.85rem; }
+        .sidebar-brand { transition: opacity 0.15s ease; }
+        .sidebar-brand:hover { opacity: 0.85; }
     </style>
 </head>
 <body class="bg-light">
@@ -129,7 +131,7 @@
 
         <!-- Desktop Sidebar -->
         <aside class="app-sidebar d-none d-md-flex">
-            <div class="sidebar-brand d-flex align-items-center">
+            <a asp-controller="Home" asp-action="Index" class="sidebar-brand d-flex align-items-center text-decoration-none">
                 <div class="brand-icon bg-primary text-white d-flex align-items-center justify-content-center rounded me-3" style="width: 42px; height: 42px; font-size: 1.25rem; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);">
                     <i class="bi bi-box-seam"></i>
                 </div>
@@ -137,7 +139,7 @@
                     <h5 class="fw-bold text-white mb-0" style="letter-spacing: 0.5px;">BoxManager</h5>
                     <small class="text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px; font-weight: 600;">Gestionale Scatole</small>
                 </div>
-            </div>
+            </a>
             
             <div class="sidebar-nav">
                 @if (User?.Identity?.IsAuthenticated ?? false)
@@ -224,4 +226,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
