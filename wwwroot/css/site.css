@@ -342,11 +342,16 @@ html, body {
    ============================================= */
 
 .order-status-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     padding: 0.3em 0.75em;
     border-radius: 50rem;
     font-size: 0.75rem;
     font-weight: 600;
+
+    white-space: nowrap;   /* 🔥 blocca il a-capo */
+    word-break: keep-all;   /* extra safety */
+    line-height: 1;
 }
 
 /* In attesa — giallo/ambra */
