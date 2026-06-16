@@ -98,7 +98,7 @@ html, body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #ff9f43; /* Warm accent color */
+  background-color: #ff9f43;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -113,7 +113,7 @@ html, body {
   display: flex;
   flex-direction: column;
   background-color: var(--main-bg);
-  min-width: 0; /* Prevents flex children from breaking parent bounds */
+  min-width: 0;
 }
 
 .content-body {
@@ -149,21 +149,10 @@ html, body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card-stat-level-1 {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
-}
-
-.card-stat-level-2 {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06) !important;
-}
-
-.card-stat-level-3 {
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important;
-}
-
-.card-stat-level-4 {
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10) !important;
-}
+.card-stat-level-1 { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important; }
+.card-stat-level-2 { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06) !important; }
+.card-stat-level-3 { box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important; }
+.card-stat-level-4 { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10) !important; }
 
 .card-stat:hover {
   transform: translateY(-4px);
@@ -192,7 +181,7 @@ html, body {
   border-color: #808080 !important;
 }
 
-/* Status Badge Styles */
+/* Status Badge Styles (legacy, mantenuti per compatibilità) */
 .badge-status {
   padding: 0.35em 0.8em;
   font-size: 0.8rem;
@@ -200,12 +189,12 @@ html, body {
   border-radius: 50rem;
   display: inline-block;
 }
-.badge-gray { background-color: #808080; color: #ffffff; }
-.badge-pending { background-color: #808080; color: #ffffff; }
-.badge-inproduction { background-color: #808080; color: #ffffff; }
-.badge-completed { background-color: #dbeafe; color: #1e40af; }
-.badge-cancelled { background-color: #fee2e2; color: #991b1b; }
-.badge-delivered { background-color: #f1f5f9; color: #475569; }
+.badge-gray       { background-color: #808080; color: #ffffff; }
+.badge-pending    { background-color: #fff3cd; color: #856404; }
+.badge-inproduction { background-color: #cfe2ff; color: #084298; }
+.badge-completed  { background-color: #d1e7dd; color: #0a3622; }
+.badge-cancelled  { background-color: #f8d7da; color: #842029; }
+.badge-delivered  { background-color: #198754; color: #ffffff; }
 
 /* Login social button hover */
 .hover-shadow:hover {
@@ -213,7 +202,6 @@ html, body {
   border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Sidebar hover effects */
 .hover-white:hover {
   color: #ffffff !important;
 }
@@ -243,7 +231,6 @@ html, body {
     filter: brightness(0.96);
 }
 
-/* Badge numero dentro la pillola — base */
 .filter-pill__badge {
     display: inline-flex;
     align-items: center;
@@ -257,7 +244,7 @@ html, body {
     line-height: 1;
 }
 
-/* === Stato: Tutti === */
+/* === Tutti === */
 .filter-pill__badge--all {
     background-color: #e9ecef;
     color: #495057;
@@ -273,7 +260,7 @@ html, body {
     box-shadow: 0 2px 6px rgba(13,110,253,0.25);
 }
 
-/* === Stato: In attesa (giallo/ambra) === */
+/* === In attesa — giallo/ambra === */
 .filter-pill--pending {
     border-color: #ffc107;
     color: #856404;
@@ -292,18 +279,18 @@ html, body {
     color: #212529;
 }
 
-/* === Stato: In produzione (verde) === */
+/* === In produzione — blu === */
 .filter-pill--inproduction {
-    border-color: #198754;
-    color: #198754;
+    border-color: #0d6efd;
+    color: #0d6efd;
 }
 .filter-pill__badge--inproduction {
-    background-color: #d1e7dd;
-    color: #0a3622;
+    background-color: #cfe2ff;
+    color: #084298;
 }
 .filter-pill--inproduction-active {
-    background-color: #198754;
-    border-color: #198754;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
     color: #ffffff;
 }
 .filter-pill--inproduction-active .filter-pill__badge--inproduction {
@@ -311,18 +298,18 @@ html, body {
     color: #ffffff;
 }
 
-/* === Stato: Completato (blu) === */
+/* === Completato — verde chiaro === */
 .filter-pill--completed {
-    border-color: #0d6efd;
-    color: #0d6efd;
+    border-color: #198754;
+    color: #198754;
 }
 .filter-pill__badge--completed {
-    background-color: #cfe2ff;
-    color: #084298;
+    background-color: #d1e7dd;
+    color: #0a3622;
 }
 .filter-pill--completed-active {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: #198754;
+    border-color: #198754;
     color: #ffffff;
 }
 .filter-pill--completed-active .filter-pill__badge--completed {
@@ -330,18 +317,18 @@ html, body {
     color: #ffffff;
 }
 
-/* === Stato: Consegnato (grigio/slate) === */
+/* === Consegnato — verde scuro/pieno === */
 .filter-pill--delivered {
-    border-color: #6c757d;
-    color: #6c757d;
+    border-color: #0f5132;
+    color: #0f5132;
 }
 .filter-pill__badge--delivered {
-    background-color: #e9ecef;
-    color: #495057;
+    background-color: #a3cfbb;
+    color: #0f5132;
 }
 .filter-pill--delivered-active {
-    background-color: #6c757d;
-    border-color: #6c757d;
+    background-color: #0f5132;
+    border-color: #0f5132;
     color: #ffffff;
 }
 .filter-pill--delivered-active .filter-pill__badge--delivered {
@@ -351,6 +338,7 @@ html, body {
 
 /* =============================================
    STATUS BADGES — colonna Stato nella tabella
+   (usati ovunque: tabelle admin, dashboard cliente, ecc.)
    ============================================= */
 
 .order-status-badge {
@@ -361,26 +349,31 @@ html, body {
     font-weight: 600;
 }
 
+/* In attesa — giallo/ambra */
 .order-status-badge--pending {
     background-color: #fff3cd;
     color: #856404;
 }
 
+/* In produzione — blu */
 .order-status-badge--inproduction {
-    background-color: #d1e7dd;
-    color: #0a3622;
-}
-
-.order-status-badge--completed {
     background-color: #cfe2ff;
     color: #084298;
 }
 
-.order-status-badge--delivered {
-    background-color: #e9ecef;
-    color: #495057;
+/* Completato — verde chiaro */
+.order-status-badge--completed {
+    background-color: #d1e7dd;
+    color: #0a3622;
 }
 
+/* Consegnato — verde scuro pieno */
+.order-status-badge--delivered {
+    background-color: #198754;
+    color: #ffffff;
+}
+
+/* Annullato — rosso */
 .order-status-badge--cancelled {
     background-color: #f8d7da;
     color: #842029;
