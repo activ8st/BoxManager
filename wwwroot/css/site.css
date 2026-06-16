@@ -391,7 +391,7 @@ html[data-theme="dark"] {
     --main-bg: #121212;
     --card-bg: #1e1e1e;
     --text-primary: #e0e0e0;
-    --text-muted: #a0a0a0;
+    --text-muted: #c0c0c0; /* Aumentata luminosità per WCAG */
     --border-color: rgba(255, 255, 255, 0.1);
     --sidebar-bg: #0a0a0a;
 }
@@ -428,6 +428,7 @@ html[data-theme="dark"] .table-light {
 
 html[data-theme="dark"] .table td, 
 html[data-theme="dark"] .table th {
+    background-color: #242424 !important; /* Grigio leggermente più chiaro del card-bg (#1e1e1e) */
     border-color: var(--border-color) !important;
 }
 
@@ -454,7 +455,7 @@ html[data-theme="dark"] .list-group-item:hover {
 html[data-theme="dark"] .form-control, 
 html[data-theme="dark"] .form-select, 
 html[data-theme="dark"] .input-group-text {
-    background-color: #2d2d2d !important;
+    background-color: #121212 !important; /* Effetto incavato rispetto al box #1e1e1e */
     border-color: var(--border-color) !important;
     color: var(--text-primary) !important;
 }
