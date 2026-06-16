@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Impostazioni Utente";
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="mb-1 fw-bold text-dark-theme-auto">Impostazioni Utente</h3>
+            <p class="text-muted mb-0">Gestisci le tue preferenze, le notifiche e l'aspetto dell'applicazione.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Apparenza -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3 d-flex align-items-center">
+                        <i class="bi bi-palette-fill text-primary me-2"></i> Apparenza
+                    </h5>
+                    <p class="text-muted small mb-4">Personalizza l'aspetto visivo di BoxManager secondo le tue preferenze.</p>
+
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
+                        <div>
+                            <div class="fw-bold">Dark Mode</div>
+                            <div class="text-muted small">Attiva il tema scuro per riposare gli occhi e risparmiare energia.</div>
+                        </div>
+                        <div class="form-check form-switch form-switch-lg">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch" style="transform: scale(1.3); margin-right: 10px; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifiche -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3 d-flex align-items-center">
+                        <i class="bi bi-bell-fill text-primary me-2"></i> Notifiche
+                    </h5>
+                    <p class="text-muted small mb-4">Scegli come e quando desideri essere avvisato sulle attività del tuo account.</p>
+
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                        <div>
+                            <div class="fw-bold">Notifiche In-App</div>
+                            <div class="text-muted small">Ricevi avvisi direttamente all'interno del gestionale.</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="inAppNotifications" checked style="transform: scale(1.3); margin-right: 10px; cursor: pointer;">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold">Aggiornamenti via Email</div>
+                            <div class="text-muted small">Ricevi aggiornamenti sullo stato dei tuoi ordini via email.</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked style="transform: scale(1.3); margin-right: 10px; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-end">
+                <button type="button" class="btn btn-primary px-4 py-2 fw-bold" onclick="alert('Impostazioni salvate con successo!');">Salva Preferenze</button>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4 bg-primary text-white">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-shield-check" style="font-size: 3rem;"></i>
+                    <h5 class="fw-bold mt-3">Privacy & Sicurezza</h5>
+                    <p class="small opacity-75 mb-0">Le tue preferenze vengono salvate localmente in modo sicuro e sincronizzate con il tuo account per garantirti la migliore esperienza.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Aggiunta di supporto dark mode per il titolo */
+    html[data-theme="dark"] .text-dark-theme-auto {
+        color: var(--text-primary) !important;
+    }
+</style>
