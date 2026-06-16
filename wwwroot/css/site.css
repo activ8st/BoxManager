@@ -523,3 +523,36 @@ html[data-theme="dark"] .nav-tabs .nav-link.active {
     color: var(--text-primary) !important;
     border-color: var(--border-color) var(--border-color) var(--card-bg) !important;
 }
+
+/* Placeholder e icone Login */
+html[data-theme="dark"] ::placeholder {
+    color: #b5b5b5 !important;
+    opacity: 1 !important;
+}
+
+html[data-theme="dark"] .input-group-text.text-muted,
+html[data-theme="dark"] .input-group .text-muted {
+    color: #b5b5b5 !important;
+}
+
+/* Separazione Welcome Card Dashboard Cliente */
+html[data-theme="dark"] .customer-welcome-card {
+    background: linear-gradient(145deg, #242424 0%, #1e1e1e 100%) !important;
+    border-bottom: 1px solid #333333 !important;
+}
+
+/* Pillole Filtri Ordini disattivate in Dark Mode */
+html[data-theme="dark"] .filter-pill:not([class*="-active"]) {
+    background-color: transparent !important;
+    color: var(--text-muted) !important;
+}
+html[data-theme="dark"] .filter-pill:not([class*="-active"]) .filter-pill__badge {
+    opacity: 0.8;
+}
+
+/* Stepper Timeline Ordini (Passaggi futuri) */
+html[data-theme="dark"] .stepper .circle:not(.done):not(.active) {
+    background-color: #242424 !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
