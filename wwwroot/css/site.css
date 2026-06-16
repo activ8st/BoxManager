@@ -460,6 +460,10 @@ html[data-theme="dark"] .input-group-text {
     color: var(--text-primary) !important;
 }
 
+html[data-theme="dark"] .bg-transparent {
+    background-color: transparent !important;
+}
+
 html[data-theme="dark"] .form-control:focus, 
 html[data-theme="dark"] .form-select:focus {
     background-color: #333 !important;
@@ -511,4 +515,21 @@ html[data-theme="dark"] .nav-tabs .nav-link.active {
     background-color: var(--card-bg) !important;
     color: var(--text-primary) !important;
     border-color: var(--border-color) var(--border-color) var(--card-bg) !important;
+}
+
+/* Placeholder e icone Login */
+html[data-theme="dark"] ::placeholder {
+    color: #b5b5b5 !important;
+    opacity: 1 !important;
+}
+
+html[data-theme="dark"] .input-group-text.text-muted,
+html[data-theme="dark"] .input-group .text-muted {
+    color: #b5b5b5 !important;
+}
+
+/* Separazione Welcome Card Dashboard Cliente */
+html[data-theme="dark"] .customer-welcome-card {
+    background: linear-gradient(145deg, #242424 0%, #1e1e1e 100%) !important;
+    border-bottom: 1px solid #333333 !important;
 }
