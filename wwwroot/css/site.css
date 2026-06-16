@@ -399,6 +399,7 @@ html[data-theme="dark"] .main-content {
 }
 
 html[data-theme="dark"] .card, 
+html[data-theme="dark"] .card-body,
 html[data-theme="dark"] .customer-dashboard-card, 
 html[data-theme="dark"] .bg-white, 
 html[data-theme="dark"] .bg-light {
@@ -433,6 +434,16 @@ html[data-theme="dark"] .table-light th {
 html[data-theme="dark"] .table-hover tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.05) !important;
     color: var(--text-primary) !important;
+}
+
+html[data-theme="dark"] .list-group-item {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+html[data-theme="dark"] .list-group-item:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 html[data-theme="dark"] .form-control, 
