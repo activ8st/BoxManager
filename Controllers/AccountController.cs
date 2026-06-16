@@ -14,6 +14,12 @@ namespace BoxManager.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        private const string AdminEmail    = "admin@boxmanager.it";
+        private const string AdminPassword = "Esame2026admin";
+
+        private const string ClientEmail    = "c.bianchi@outlook.it";
+        private const string ClientPassword = "Esame2026client";
+
         public AccountController(ApplicationDbContext context)
         {
             _context = context;
@@ -23,75 +29,91 @@ namespace BoxManager.Controllers
         public IActionResult Login()
         {
             if (User?.Identity?.IsAuthenticated ?? false)
-            {
                 return RedirectToAction("Index", "Home");
-            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError(string.Empty, "Inserire un indirizzo e-mail valido.");
+                ModelState.AddModelError(string.Empty, "Inserire email e password.");
                 return View();
             }
 
-            var cleanEmail = email.Trim().ToLower();
+            var cleanEmail    = email.Trim().ToLower();
+            var cleanPassword = password.Trim();
 
-            if (cleanEmail == "admin@boxmanager.it")
+            // ── Admin ────────────────────────────────────────────────────
+            if (cleanEmail == AdminEmail.ToLower())
             {
+                if (cleanPassword != AdminPassword)
+                {
+                    ModelState.AddModelError(string.Empty, "Password non corretta.");
+                    return View();
+                }
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, "Admin"),
+                    new Claim(ClaimTypes.Name,  "Admin"),
                     new Claim(ClaimTypes.Email, email),
-                    new Claim(ClaimTypes.Role, "Admin")
+                    new Claim(ClaimTypes.Role,  "Admin")
                 };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var identity  = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
-
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 return RedirectToAction("Index", "Home");
             }
 
-            // Cerca l'email tra i referenti degli ordini
-            var orderWithReferent = await _context.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(o => o.Referente != null && o.Referente.ToLower() == cleanEmail);
+            // ── Cliente ──────────────────────────────────────────────────
+            if (cleanEmail == ClientEmail.ToLower())
+            {
+                if (cleanPassword != ClientPassword)
+                {
+                    ModelState.AddModelError(string.Empty, "Password non corretta.");
+                    return View();
+                }
 
-            Customer? customer = null;
-            if (orderWithReferent != null)
-            {
-                customer = orderWithReferent.Customer;
-            }
-            else
-            {
-                // Cerca l'email tra i contatti dei clienti
-                customer = await _context.Customers
+                // Cerca il cliente nel DB tramite email
+                var customer = await _context.Customers
                     .FirstOrDefaultAsync(c => c.Email.ToLower() == cleanEmail);
-            }
 
-            if (customer != null)
-            {
+                // Se non trovato per email diretta, cerca tramite referente negli ordini
+                if (customer == null)
+                {
+                    var order = await _context.Orders
+                        .Include(o => o.Customer)
+                        .FirstOrDefaultAsync(o => o.Referente != null && o.Referente.ToLower() == cleanEmail);
+
+                    customer = order?.Customer;
+                }
+
+                if (customer == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Nessun cliente associato a questa email.");
+                    return View();
+                }
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, customer.ContactPerson),
+                    new Claim(ClaimTypes.Name,  customer.ContactPerson),
                     new Claim(ClaimTypes.Email, cleanEmail),
-                    new Claim(ClaimTypes.Role, "Customer"),
-                    new Claim("CustomerId", customer.Id.ToString())
+                    new Claim(ClaimTypes.Role,  "Customer"),
+                    new Claim("CustomerId",     customer.Id.ToString())
                 };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var identity  = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
-
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 return RedirectToAction("Index", "Home");
             }
 
+            // ── Email non riconosciuta ────────────────────────────────────
             ModelState.AddModelError(string.Empty, "Indirizzo e-mail non registrato nel sistema.");
             return View();
         }

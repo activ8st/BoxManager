@@ -50,10 +50,20 @@
         </div>
     </div>
     <div>
-        <a asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.Id" 
-           class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm text-decoration-none">
-            <i class="bi bi-pencil me-2"></i>Modifica
-        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.Id"
+               class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm text-decoration-none">
+                <i class="bi bi-pencil me-2"></i>Modifica
+            </a>
+        }
+        else if (User.IsInRole("Customer"))
+        {
+            <a asp-controller="Customers" asp-action="EditProfile"
+               class="btn btn-light border bg-white rounded-pill px-4 fw-medium text-secondary shadow-sm text-decoration-none">
+                <i class="bi bi-pencil me-2"></i>Modifica
+            </a>
+        }
     </div>
 </div>
 

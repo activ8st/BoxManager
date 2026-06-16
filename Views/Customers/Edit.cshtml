@@ -1,12 +1,14 @@
 @model BoxManager.Models.Customer
 @{
-    ViewData["Title"] = "Modifica Cliente";
+    ViewData["Title"] = User.IsInRole("Customer") ? "Modifica Profilo" : "Modifica Cliente";
+    var formAction = User.IsInRole("Customer") ? "EditProfile" : "Edit";
+    var cancelUrl = User.IsInRole("Customer") ? Url.Action("Index", "Home") : Url.Action("Details", new { id = Model.Id });
 }
 
 <div class="container">
-    <h2 class="fw-bold mb-4">Modifica Cliente</h2>
+    <h2 class="fw-bold mb-4">@ViewData["Title"]</h2>
 
-    <form asp-action="Edit" method="post">
+    <form asp-action="@formAction" method="post">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -67,8 +69,8 @@
         </div>
 
         <div class="d-flex justify-content-end gap-2 mb-5">
-            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Annulla</a>
-            <button type="submit" class="btn btn-success px-5">Salva Cliente</button>
+            <a href="@cancelUrl" class="btn btn-outline-secondary">Annulla</a>
+            <button type="submit" class="btn btn-success px-5">Salva</button>
         </div>
     </form>
 </div>
