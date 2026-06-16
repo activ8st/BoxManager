@@ -118,7 +118,7 @@
                                     <td>@order.BoxCode</td>
                                     <td>@order.Quantity</td>
                                     <td>
-                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Delivered ? "bg-primary text-white" : "bg-secondary")">
+                                        <span class="order-status-badge order-status-badge--@order.Status.ToString().ToLower()">
                                             @(order.Status switch
                                             {
                                                 BoxManager.Models.OrderStatus.Pending => "In attesa",
