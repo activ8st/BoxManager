@@ -87,24 +87,7 @@
     </div>
 </div>
 
-<!-- Tabs -->
-<div class="row">
-    <div class="col-lg-4"></div>
-    <div class="col-lg-8">
-        <ul class="nav nav-tabs mb-3" id="orderTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="struttura-tab" data-bs-toggle="tab" data-bs-target="#struttura" type="button" role="tab">Struttura</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="stampa-tab" data-bs-toggle="tab" data-bs-target="#stampa" type="button" role="tab">Stampa</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="economici-tab" data-bs-toggle="tab" data-bs-target="#economici" type="button" role="tab">Aspetti Economici</button>
-            </li>
-        </ul>
-    </div>
-</div>
-
+<!-- Customer Info and Tabs in a single connected layout -->
 <div class="row">
     <div class="col-lg-4">
         <div class="card shadow-sm mb-4">
@@ -117,15 +100,26 @@
                 <p class="mb-0"><i class="bi bi-person me-2"></i>@(customer?.ContactPerson ?? "—")</p>
             </div>
         </div>
-
-</div>
+    </div>
 
     <div class="col-lg-8">
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="struttura" role="tabpanel">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white fw-bold">Struttura</div>
-                    <div class="card-body">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white pt-3 pb-0 border-bottom">
+                <ul class="nav nav-tabs card-header-tabs" id="orderTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-medium text-dark" id="struttura-tab" data-bs-toggle="tab" data-bs-target="#struttura" type="button" role="tab">Struttura</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-medium text-muted" id="stampa-tab" data-bs-toggle="tab" data-bs-target="#stampa" type="button" role="tab">Stampa</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-medium text-muted" id="economici-tab" data-bs-toggle="tab" data-bs-target="#economici" type="button" role="tab">Aspetti Economici</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body pt-4">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="struttura" role="tabpanel">
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <div class="p-3 bg-light rounded text-center">
@@ -165,9 +159,6 @@
             </div>
 
             <div class="tab-pane fade" id="stampa" role="tabpanel">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white fw-bold">Stampa</div>
-                    <div class="card-body">
                         @if (sheet != null)
                         {
                             <div class="row">
@@ -230,13 +221,8 @@
                             <p class="text-muted fst-italic">Scheda tecnica non disponibile per questo ordine.</p>
                         }
                     </div>
-                </div>
-            </div>
 
             <div class="tab-pane fade" id="economici" role="tabpanel">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white fw-bold">Aspetti Economici</div>
-                    <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered mb-0">
                                 <thead class="table-light">
@@ -257,20 +243,21 @@
                                 </tbody>
                             </table>
                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <style>
     .stepper { position: relative; padding: 1rem 0 0.5rem 0; }
     .stepper .line { position:absolute; left:0; right:0; top:18px; height:3px; background:#e9ecef; z-index:0; }
+    .stepper .line-progress { position:absolute; left:0; top:18px; height:3px; background:#0d6efd; z-index:0; transition: width 0.4s ease; }
     .stepper ul { position:relative; z-index:1; display:flex; justify-content:space-between; align-items:center; padding:0; margin:0; list-style:none; }
     .stepper ul li { text-align:center; }
-    .stepper .circle { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; border:1px solid #ced4da; background:#fff; color:#6c757d; }
-    .stepper .circle.active { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+    .stepper .circle { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; border:1px solid #ced4da; background:#fff; color:#6c757d; transition: all 0.3s; }
+    .stepper .circle.active { background:#0d6efd; color:#fff; border-color:#0d6efd; box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15); }
     .color-swatch { width: 28px; height: 28px; border-radius: 50%; display: inline-block; border: 1px solid #ced4da; }
 
     @@media print {
