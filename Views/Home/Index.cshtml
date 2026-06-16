@@ -60,22 +60,32 @@
                         <tbody>
                             @foreach (var order in Model.RecentOrders)
                             {
+                                var displayName = order.Status switch
+                                {
+                                    BoxManager.Models.OrderStatus.Pending      => "In attesa",
+                                    BoxManager.Models.OrderStatus.InProduction  => "In produzione",
+                                    BoxManager.Models.OrderStatus.Completed     => "Completato",
+                                    BoxManager.Models.OrderStatus.Delivered     => "Consegnato",
+                                    BoxManager.Models.OrderStatus.Cancelled     => "Annullato",
+                                    _ => order.Status.ToString()
+                                };
+
+                                var statusBadgeClass = order.Status switch
+                                {
+                                    BoxManager.Models.OrderStatus.Pending      => "order-status-badge order-status-badge--pending",
+                                    BoxManager.Models.OrderStatus.InProduction  => "order-status-badge order-status-badge--inproduction",
+                                    BoxManager.Models.OrderStatus.Completed     => "order-status-badge order-status-badge--completed",
+                                    BoxManager.Models.OrderStatus.Delivered     => "order-status-badge order-status-badge--delivered",
+                                    BoxManager.Models.OrderStatus.Cancelled     => "order-status-badge order-status-badge--cancelled",
+                                    _ => "order-status-badge"
+                                };
+
                                 <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Orders", new { id = order.Id })'">
                                     <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
                                     <td>@order.Customer.BusinessName</td>
                                     <td>@order.BoxCode</td>
                                     <td>
-                                        <span class="badge rounded-pill @(order.Status == BoxManager.Models.OrderStatus.Delivered ? "bg-primary text-white" : "badge-gray")">
-                                            @(order.Status switch
-                                            {
-                                                BoxManager.Models.OrderStatus.Pending => "In attesa",
-                                                BoxManager.Models.OrderStatus.InProduction => "In produzione",
-                                                BoxManager.Models.OrderStatus.Completed => "Completato",
-                                                BoxManager.Models.OrderStatus.Delivered => "Consegnato",
-                                                BoxManager.Models.OrderStatus.Cancelled => "Annullato",
-                                                _ => order.Status.ToString()
-                                            })
-                                        </span>
+                                        <span class="@statusBadgeClass">@displayName</span>
                                     </td>
                                     <td style="text-align:right; white-space:nowrap;">€ @order.TotalPrice.ToString("N2")</td>
                                 </tr>
