@@ -19,14 +19,40 @@
                     <i class="bi bi-pencil me-1"></i>Modifica
                 </a>
             </div>
-            <div class="card-body">
-                <p><strong>Ragione Sociale:</strong><br />@Model.BusinessName</p>
-                <p><strong>P.IVA:</strong><br />@Model.VatNumber</p>
-                <p><strong>Indirizzo:</strong><br />@Model.Address</p>
-                <p><strong>Email:</strong><br />@Model.Email</p>
-                <p><strong>Telefono:</strong><br />@Model.Phone</p>
-                <p><strong>Referente:</strong><br />@Model.ContactPerson</p>
-                <p><strong>Note:</strong><br />@(string.IsNullOrEmpty(Model.Notes) ? "Nessuna nota" : Model.Notes)</p>
+            <style>
+                .info-label { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
+                .info-value { font-size: 0.95rem; color: #374151; font-weight: 500; margin-bottom: 1.25rem; }
+            </style>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="info-label"><i class="bi bi-building me-1"></i> Ragione Sociale</div>
+                        <div class="info-value">@Model.BusinessName</div>
+
+                        <div class="info-label"><i class="bi bi-person me-1"></i> Referente</div>
+                        <div class="info-value">@Model.ContactPerson</div>
+                        
+                        <div class="info-label"><i class="bi bi-geo-alt me-1"></i> Indirizzo</div>
+                        <div class="info-value mb-sm-0">@Model.Address</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="info-label"><i class="bi bi-card-text me-1"></i> P.IVA</div>
+                        <div class="info-value">@Model.VatNumber</div>
+
+                        <div class="info-label"><i class="bi bi-envelope me-1"></i> Email</div>
+                        <div class="info-value">@Model.Email</div>
+                        
+                        <div class="info-label"><i class="bi bi-telephone me-1"></i> Telefono</div>
+                        <div class="info-value mb-sm-0">@Model.Phone</div>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="info-label"><i class="bi bi-sticky me-1"></i> Note</div>
+                        <div class="info-value mb-0">@Model.Notes</div>
+                    </div>
+                }
             </div>
         </div>
     </div>
