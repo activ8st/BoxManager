@@ -11,9 +11,9 @@
 <div class="card shadow-sm">
     <div class="card-body">
         <form asp-action="Index" method="get" class="mb-4">
-            <div class="input-group">
-                <input type="text" name="searchString" class="form-control" placeholder="Cerca per ragione sociale o P.IVA..." value="@ViewData["CurrentFilter"]">
-                <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search me-2"></i>Cerca</button>
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="pointer-events:none;"></i>
+                <input type="text" name="searchString" class="form-control ps-5" placeholder="Cerca per ragione sociale o P.IVA..." value="@ViewData["CurrentFilter"]">
             </div>
         </form>
 
@@ -26,24 +26,17 @@
                         <th>Email</th>
                         <th>Telefono</th>
                         <th>Referente</th>
-                        <th class="text-end">Azioni</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Customers", new { id = item.Id })'">
                             <td class="fw-bold">@item.BusinessName</td>
                             <td>@item.VatNumber</td>
                             <td>@item.Email</td>
-                            <td>@item.Phone</td>
+                            <td style="white-space:nowrap;">@item.Phone</td>
                             <td>@item.ContactPerson</td>
-                            <td class="text-end">
-                                <div class="btn-group">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Dettagli"><i class="bi bi-eye"></i></a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Modifica"><i class="bi bi-pencil"></i></a>
-                                </div>
-                            </td>
                         </tr>
                     }
                 </tbody>
