@@ -162,13 +162,20 @@
                     background: var(--card-bg); 
                 }
 
-                html[data-theme="dark"] #economici-table thead tr th,
-                html[data-theme="dark"] #economici-table tbody tr td {
+                #economici-table th,
+                #economici-table td {
+                    border-left: none !important;
+                    border-right: none !important;
+                }
+
+                html[data-theme="dark"] #economici-table th,
+                html[data-theme="dark"] #economici-table td {
                     background-color: #242424 !important;
                     color: var(--text-primary) !important;
-                    border-color: var(--border-color) !important;
+                    border-top-color: var(--border-color) !important;
+                    border-bottom-color: var(--border-color) !important;
                 }
-                html[data-theme="dark"] #economici-table thead tr th {
+                html[data-theme="dark"] #economici-table thead th {
                     background-color: rgba(255,255,255,0.05) !important;
                 }
             </style>
@@ -292,7 +299,7 @@
                     <!-- TAB: Aspetti Economici -->
                     <div class="tab-pane fade" id="economici" role="tabpanel">
                         <div class="table-responsive">
-                            <table class="table table-bordered mb-0" id="economici-table">
+                            <table class="table mb-0" id="economici-table">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Quantità</th>

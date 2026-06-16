@@ -556,3 +556,10 @@ html[data-theme="dark"] .stepper .circle:not(.done):not(.active) {
     border-color: var(--border-color) !important;
     color: var(--text-muted) !important;
 }
+
+/* Bordi verticali più leggeri per tabella Aspetti Economici */
+html[data-theme="dark"] #economici-table td,
+html[data-theme="dark"] #economici-table th {
+    border-left-color: rgba(255,255,255,0.04) !important;
+    border-right-color: rgba(255,255,255,0.04) !important;
+}
