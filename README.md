@@ -47,7 +47,7 @@ Per la valutazione del progetto, a seguito dei recenti aggiornamenti di sicurezz
   - Password: `Esame2026admin`
 
 - **Vista Cliente (Sola Lettura Filtrata):**
-  - Email: `c.bianchi@outlook.it` *(oppure qualsiasi altra email di un cliente simulato, es. `l.morosini@outlook.com`)*
+  - Email: `c.bianchi@outlook.it`
   - Password: `Esame2026client` 
 
 
