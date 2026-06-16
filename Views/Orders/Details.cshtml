@@ -121,16 +121,37 @@
 
     <div class="col-lg-8">
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white pt-3 pb-0 border-bottom">
-                <ul class="nav nav-tabs card-header-tabs" id="orderTabs" role="tablist">
+            <style>
+                .custom-tabs { border-bottom: 2px solid #e5e7eb; gap: 0.5rem; }
+                .custom-tabs .nav-link { 
+                    border: 2px solid transparent; 
+                    border-bottom: none; 
+                    color: #6b7280; 
+                    font-weight: 500; 
+                    padding: 0.75rem 1.5rem; 
+                    border-radius: 0.5rem 0.5rem 0 0; 
+                    margin-bottom: -2px; 
+                    transition: all 0.2s;
+                }
+                .custom-tabs .nav-link:hover { border-color: #e5e7eb; border-bottom: none; color: #374151; background: #f9fafb; }
+                .custom-tabs .nav-link.active { 
+                    border-color: #e5e7eb; 
+                    border-bottom: 2px solid #fff; 
+                    color: #0d6efd; 
+                    font-weight: 600; 
+                    background: #fff; 
+                }
+            </style>
+            <div class="card-header bg-white pt-3 px-4 border-0 pb-0">
+                <ul class="nav nav-tabs custom-tabs" id="orderTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-medium text-dark" id="struttura-tab" data-bs-toggle="tab" data-bs-target="#struttura" type="button" role="tab">Struttura</button>
+                        <button class="nav-link active" id="struttura-tab" data-bs-toggle="tab" data-bs-target="#struttura" type="button" role="tab">Struttura</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-medium text-muted" id="stampa-tab" data-bs-toggle="tab" data-bs-target="#stampa" type="button" role="tab">Stampa</button>
+                        <button class="nav-link" id="stampa-tab" data-bs-toggle="tab" data-bs-target="#stampa" type="button" role="tab">Stampa</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-medium text-muted" id="economici-tab" data-bs-toggle="tab" data-bs-target="#economici" type="button" role="tab">Aspetti Economici</button>
+                        <button class="nav-link" id="economici-tab" data-bs-toggle="tab" data-bs-target="#economici" type="button" role="tab">Aspetti Economici</button>
                     </li>
                 </ul>
             </div>
