@@ -208,6 +208,7 @@ html, body {
   color: #ffffff !important;
 }
 
+
 /* =============================================
    FILTER PILLS — Orders/Index
    ============================================= */
@@ -369,9 +370,8 @@ html, body {
     border-radius: 50rem;
     font-size: 0.75rem;
     font-weight: 600;
-
-    white-space: nowrap;   /* 🔥 blocca il a-capo */
-    word-break: keep-all;   /* extra safety */
+    white-space: nowrap;
+    word-break: keep-all;
     line-height: 1;
 }
 
@@ -409,52 +409,53 @@ html, body {
    DARK MODE SUPPORT
    ============================================= */
 html[data-theme="dark"] {
-    --main-bg: #121212;
-    --card-bg: #1e1e1e;
+    --main-bg: #161616;       /* era #121212 — sfondo pagina più scuro delle card */
+    --card-bg: #222222;       /* era #1e1e1e — card più chiare dello sfondo, emergono */
     --text-primary: #e0e0e0;
-    --text-muted: #c0c0c0; /* Aumentata luminosità per WCAG */
-    --border-color: rgba(255, 255, 255, 0.1);
-    --sidebar-bg: #0a0a0a;
+    --text-muted: #9ca3af;    /* era #a0a0a0 — leggibilità migliorata */
+    --border-color: rgba(255, 255, 255, 0.08);  /* era 0.1 — bordi più sottili */
+    --sidebar-bg: #0f1214;    /* era #0a0a0a — meno nero puro */
 }
 
-html[data-theme="dark"] body, 
-html[data-theme="dark"] .app-wrapper, 
+html[data-theme="dark"] body,
+html[data-theme="dark"] .app-wrapper,
 html[data-theme="dark"] .main-content {
     background-color: var(--main-bg) !important;
     color: var(--text-primary) !important;
 }
 
-html[data-theme="dark"] .card, 
+html[data-theme="dark"] .card,
 html[data-theme="dark"] .card-body,
-html[data-theme="dark"] .customer-dashboard-card, 
-html[data-theme="dark"] .bg-white, 
+html[data-theme="dark"] .customer-dashboard-card,
+html[data-theme="dark"] .bg-white,
 html[data-theme="dark"] .bg-light {
     background-color: var(--card-bg) !important;
     border-color: var(--border-color) !important;
     color: var(--text-primary) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important; /* ombre visibili nel dark al posto del bianco */
 }
 
 html[data-theme="dark"] .card-header {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;  /* era 0.05 */
     border-bottom-color: var(--border-color) !important;
     color: var(--text-primary) !important;
 }
 
-html[data-theme="dark"] .table, 
-html[data-theme="dark"] .table-hover, 
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .table-hover,
 html[data-theme="dark"] .table-light {
     color: var(--text-primary) !important;
     background-color: transparent !important;
 }
 
-html[data-theme="dark"] .table td, 
+html[data-theme="dark"] .table td,
 html[data-theme="dark"] .table th {
     background-color: #242424 !important; /* Grigio leggermente più chiaro del card-bg (#1e1e1e) */
     border-color: var(--border-color) !important;
 }
 
 html[data-theme="dark"] .table-light th {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;  /* era 0.05 */
     color: var(--text-primary) !important;
 }
 
@@ -473,22 +474,29 @@ html[data-theme="dark"] .list-group-item:hover {
     background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
-html[data-theme="dark"] .form-control, 
-html[data-theme="dark"] .form-select, 
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
 html[data-theme="dark"] .input-group-text {
-    background-color: #121212 !important; /* Effetto incavato rispetto al box #1e1e1e */
+    background-color: #2a2a2a !important;  /* era #2d2d2d — leggermente più scuro per effetto "incavato" */
     border-color: var(--border-color) !important;
     color: var(--text-primary) !important;
+}
+
+html[data-theme="dark"] .form-control::placeholder,
+html[data-theme="dark"] .form-select::placeholder {
+    color: #6b7280 !important;  /* placeholder visibile ma distinto dal testo reale */
 }
 
 html[data-theme="dark"] .bg-transparent {
     background-color: transparent !important;
 }
 
-html[data-theme="dark"] .form-control:focus, 
+html[data-theme="dark"] .form-control:focus,
 html[data-theme="dark"] .form-select:focus {
-    background-color: #333 !important;
+    background-color: #303030 !important;  /* era #333 */
     color: #fff !important;
+    border-color: rgba(13, 110, 253, 0.5) !important;  /* focus blu visibile */
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15) !important;
 }
 
 html[data-theme="dark"] .text-dark {
@@ -504,8 +512,8 @@ html[data-theme="dark"] .info-label {
     opacity: 0.85;
 }
 
-html[data-theme="dark"] .border, 
-html[data-theme="dark"] .border-bottom, 
+html[data-theme="dark"] .border,
+html[data-theme="dark"] .border-bottom,
 html[data-theme="dark"] .border-top {
     border-color: var(--border-color) !important;
 }
@@ -515,7 +523,7 @@ html[data-theme="dark"] .modal-content {
     border-color: var(--border-color) !important;
 }
 
-html[data-theme="dark"] .modal-header, 
+html[data-theme="dark"] .modal-header,
 html[data-theme="dark"] .modal-footer {
     border-color: var(--border-color) !important;
 }
@@ -541,6 +549,11 @@ html[data-theme="dark"] .nav-tabs .nav-link.active {
     background-color: var(--card-bg) !important;
     color: var(--text-primary) !important;
     border-color: var(--border-color) var(--border-color) var(--card-bg) !important;
+}
+
+.text-kpi-label {
+  color: rgba(255, 255, 255, 0.65); /* grigio chiaro leggibile */
+  letter-spacing: 0.5px;
 }
 
 /* Placeholder e icone Login */
