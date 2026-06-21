@@ -73,7 +73,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Where(x => !string.IsNullOrEmpty(x.Referente)))
                     {
                         var displayName = item.Status switch
                         {
@@ -98,7 +98,7 @@
                         <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Orders", new { id = item.Id })'">
                             <td class="ps-4 fw-bold text-dark" style="font-size: 0.9rem;">ORD-2026-@item.Id.ToString("D3")</td>
                             @if (User.IsInRole("Admin")) { <td class="fw-bold text-dark">@item.Customer.BusinessName</td> }
-                            <td class="text-muted" style="font-size: 0.85rem;">@item.Referente</td>
+                            <td class="text-muted" style="font-size: 0.85rem;">@item.Customer.ContactPerson</td>
                             <td class="text-muted" style="font-size: 0.85rem;">@item.BoxCode</td>
                             <td class="text-muted" style="font-size: 0.85rem;">Fefco @((item.Id % 5) + 1)</td>
                             <td class="text-muted" style="font-size: 0.85rem;">@item.OrderDate.ToString("dd/MM/yyyy")</td>
