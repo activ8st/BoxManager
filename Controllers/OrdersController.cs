@@ -150,7 +150,7 @@ namespace BoxManager.Controllers
             return RedirectToAction(nameof(Details), new { id = order.Id });
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> Edit(int? id, string? returnUrl)
         {
             if (id == null) return NotFound();
@@ -160,7 +160,25 @@ namespace BoxManager.Controllers
                 .FirstOrDefaultAsync(o => o.Id == id);
             if (order == null) return NotFound();
 
-            ViewBag.Customers = await _context.Customers.ToListAsync();
+            if (order.Status != OrderStatus.Pending)
+            {
+                TempData["ErrorMessage"] = "Non è possibile modificare un ordine che non è più 'In attesa'.";
+                return RedirectToAction(nameof(Details), new { id = order.Id });
+            }
+
+            if (!User.IsInRole("Admin"))
+            {
+                var customerIdClaim = User.FindFirst("CustomerId")?.Value;
+                if (customerIdClaim == null || !int.TryParse(customerIdClaim, out int customerId) || order.CustomerId != customerId)
+                {
+                    return Forbid();
+                }
+            }
+            else
+            {
+                ViewBag.Customers = await _context.Customers.ToListAsync();
+            }
+
             var referer = Request.Headers["Referer"].ToString();
             ViewBag.ReturnUrl = returnUrl ?? referer;
             return View(order);
@@ -168,7 +186,7 @@ namespace BoxManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, Order order, IFormFile? CustomerLogo, string? returnUrl)
         {
             if (id != order.Id) return NotFound();
@@ -177,6 +195,22 @@ namespace BoxManager.Controllers
                 .Include(o => o.TechnicalSheet)
                 .FirstOrDefaultAsync(o => o.Id == id);
             if (existingOrder == null) return NotFound();
+
+            if (existingOrder.Status != OrderStatus.Pending)
+            {
+                return Forbid();
+            }
+
+            if (!User.IsInRole("Admin"))
+            {
+                var customerIdClaim = User.FindFirst("CustomerId")?.Value;
+                if (customerIdClaim == null || !int.TryParse(customerIdClaim, out int customerId) || existingOrder.CustomerId != customerId)
+                {
+                    return Forbid();
+                }
+                // Il cliente non può cambiare l'appartenenza dell'ordine
+                order.CustomerId = customerId;
+            }
 
             // Remove validation errors for navigation properties that aren't bound by the form
             ModelState.Remove("Customer");
@@ -196,7 +230,10 @@ namespace BoxManager.Controllers
                     System.Diagnostics.Debug.WriteLine($"ModelState Error: {error.ErrorMessage}");
                 }
                 
-                ViewBag.Customers = await _context.Customers.ToListAsync();
+                if (User.IsInRole("Admin"))
+                {
+                    ViewBag.Customers = await _context.Customers.ToListAsync();
+                }
                 ViewBag.ReturnUrl = returnUrl;
                 ViewBag.ModelErrors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 return View(order);
