@@ -116,6 +116,12 @@ namespace BoxManager.Controllers
         public async Task<IActionResult> Create(Order order, TechnicalSheet sheet, IFormFile? CustomerLogo)
         {
             order.OrderDate = DateTime.Now;
+
+            // Il referente non viene chiesto nel form: viene preso automaticamente
+            // dal contatto del cliente selezionato.
+            var customer = await _context.Customers.FindAsync(order.CustomerId);
+            order.Referente = customer?.ContactPerson;
+
             _context.Add(order);
             await _context.SaveChangesAsync();
 
@@ -197,8 +203,14 @@ namespace BoxManager.Controllers
 
             existingOrder.BoxCode = order.BoxCode;
             existingOrder.Quantity = order.Quantity;
-            existingOrder.CustomerId = order.CustomerId;
             existingOrder.OrderDate = order.OrderDate;
+
+            if (existingOrder.CustomerId != order.CustomerId)
+            {
+                var newCustomer = await _context.Customers.FindAsync(order.CustomerId);
+                existingOrder.Referente = newCustomer?.ContactPerson;
+            }
+            existingOrder.CustomerId = order.CustomerId;
 
             var submittedSheet = order.TechnicalSheet;
             if (submittedSheet == null)

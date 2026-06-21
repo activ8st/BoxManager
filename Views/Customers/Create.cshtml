@@ -1,74 +1,196 @@
-@model BoxManager.Models.Customer
+@model BoxManager.Models.Order
 @{
-    ViewData["Title"] = "Nuovo Cliente";
+    ViewData["Title"] = "Nuovo Ordine";
 }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Registrazione Nuovo Cliente</h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        
+<div id="createOrderApp" class="container">
+    <h2 class="fw-bold mb-4">Nuovo Ordine e Scheda Tecnica</h2>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Informazioni Generali -->
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Informazioni Generali</h5>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label asp-for="BusinessName" class="form-label fw-bold"></label>
-                                <input asp-for="BusinessName" class="form-control" placeholder="es. Cartotecnica Rossi S.r.l." />
-                                <span asp-validation-for="BusinessName" class="text-danger"></span>
-                            </div>
-                            
                             <div class="col-md-6 mb-3">
-                                <label asp-for="VatNumber" class="form-label fw-bold"></label>
-                                <input asp-for="VatNumber" class="form-control" placeholder="11 cifre" />
-                                <span asp-validation-for="VatNumber" class="text-danger"></span>
+                                <label class="form-label">Cliente</label>
+                                <select id="customerSelect" name="CustomerId" class="form-select" required>
+                                    <option value="">Seleziona un cliente...</option>
+                                    @foreach (var c in ViewBag.Customers)
+                                    {
+                                        <!option value="@c.Id" @(ViewBag.SelectedCustomerId == c.Id ? "selected" : "")>@c.BusinessName</!option>
+                                    }
+                                </select>
                             </div>
-                            
                             <div class="col-md-6 mb-3">
-                                <label asp-for="ContactPerson" class="form-label fw-bold"></label>
-                                <input asp-for="ContactPerson" class="form-control" />
-                                <span asp-validation-for="ContactPerson" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Email" class="form-label fw-bold"></label>
-                                <input asp-for="Email" class="form-control" type="email" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Phone" class="form-label fw-bold"></label>
-                                <input asp-for="Phone" class="form-control" />
-                                <span asp-validation-for="Phone" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-12 mb-3">
-                                <label asp-for="Address" class="form-label fw-bold"></label>
-                                <input asp-for="Address" class="form-control" />
-                                <span asp-validation-for="Address" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-12 mb-3">
-                                <label asp-for="Notes" class="form-label fw-bold"></label>
-                                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-                                <span asp-validation-for="Notes" class="text-danger"></span>
+                                <label class="form-label">Codice Scatola</label>
+                                <input type="text" name="BoxCode" class="form-control" placeholder="es. BX-100" required />
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <a asp-action="Index" class="btn btn-outline-secondary">Annulla</a>
-                            <button type="submit" class="btn btn-primary px-4">Salva Cliente</button>
+            <!-- Scheda Tecnica: Struttura -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">1. Struttura</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Lunghezza (L)</label>
+                                <input type="number" name="Length" class="form-control" required />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Larghezza (W)</label>
+                                <input type="number" name="Width" class="form-control" required />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Altezza (H)</label>
+                                <input type="number" name="Height" class="form-control" required />
+                            </div>
                         </div>
-                    </form>
+                        <div class="mb-3">
+                            <label class="form-label">Tipologia Cartone</label>
+                            <input type="text" name="CardboardType" class="form-control" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tipo Onda</label>
+                                <select name="WaveType" class="form-select" required>
+                                    <option value="A">A (Alta)</option>
+                                    <option value="B">B (Bassa)</option>
+                                    <option value="C">C (Media)</option>
+                                    <option value="E">E (Micro)</option>
+                                    <option value="BC">BC (Doppia)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Codice FEFCO</label>
+                                <input type="text" name="FefcoCode" class="form-control" placeholder="es. 0201" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheda Tecnica: Stampa -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">2. Stampa</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" name="HasPrinting" v-model="hasPrinting">
+                            <label class="form-check-label">Presenza Stampa</label>
+                        </div>
+                        <div v-if="hasPrinting">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Numero Colori</label>
+                                    <input type="number" name="ColorCount" class="form-control" min="0" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tipologia Stampa</label>
+                                    <select name="PrintingType" class="form-select">
+                                        <option value="Offset">Offset</option>
+                                        <option value="Flexo">Flexo</option>
+                                        <option value="Digitale">Digitale</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Finiture Speciali</label>
+                                <input type="text" name="SpecialFinishes" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Codici Colori <span class="text-muted">(opzionale)</span></label>
+                                <input type="text" name="ColorCodes" class="form-control" placeholder="es. #FF0000, #00AEEF, #000000" />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Logo Cliente</label>
+                                    <input type="file" name="CustomerLogo" accept="image/*" class="form-control" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Note Stampa</label>
+                                    <textarea name="PrintingNotes" class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aspetti Economici -->
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm border-primary">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 fw-bold">3. Aspetti Economici</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Quantità</label>
+                                <input type="number" name="Quantity" class="form-control" v-model.number="quantity" required />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Prezzo Unitario (€)</label>
+                                <input type="number" step="0.01" name="UnitPrice" class="form-control" v-model.number="unitPrice" required />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Sconto (%)</label>
+                                <input type="number" step="0.1" name="Discount" class="form-control" v-model.number="discount" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="p-3 bg-light rounded text-end">
+                                    <small class="text-muted d-block">Totale Calcolato</small>
+                                    <h4 class="mb-0 fw-bold text-primary">€ {{ totalFormatted }}</h4>
+                                    <input type="hidden" name="TotalPrice" :value="totalPrice" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="d-flex justify-content-end gap-2 mb-5">
+            <a asp-action="Index" class="btn btn-outline-secondary">Annulla</a>
+            <button type="submit" class="btn btn-primary px-5">Salva Ordine</button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    hasPrinting: false,
+                    quantity: 1,
+                    unitPrice: 0.00,
+                    discount: 0
+                }
+            },
+            computed: {
+                totalPrice() {
+                    const base = this.quantity * this.unitPrice;
+                    const discounted = base * (1 - (this.discount / 100));
+                    return discounted.toFixed(2);
+                },
+                totalFormatted() {
+                    return parseFloat(this.totalPrice).toLocaleString('it-IT', { minimumFractionDigits: 2 });
+                }
+            }
+        }).mount('#createOrderApp');
+    </script>
 }
