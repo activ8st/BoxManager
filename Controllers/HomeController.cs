@@ -54,6 +54,11 @@ namespace BoxManager.Controllers
             return View(viewModel);
         }
 
+        public IActionResult Settings()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -14,6 +14,8 @@ html, body {
   background-color: var(--main-bg);
 }
 
+
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -366,13 +368,13 @@ html, body {
     color: #084298;
 }
 
-/* Completato — verde chiaro */
+/* Completato — verde scuro */
 .order-status-badge--completed {
     background-color: #d1e7dd;
     color: #0a3622;
 }
 
-/* Consegnato — verde scuro pieno */
+/* Consegnato — verde  pieno */
 .order-status-badge--delivered {
     background-color: #198754;
     color: #ffffff;
@@ -429,6 +431,7 @@ html[data-theme="dark"] .table-light {
 
 html[data-theme="dark"] .table td,
 html[data-theme="dark"] .table th {
+    background-color: #242424 !important; /* Grigio leggermente più chiaro del card-bg (#1e1e1e) */
     border-color: var(--border-color) !important;
 }
 
@@ -465,6 +468,10 @@ html[data-theme="dark"] .form-select::placeholder {
     color: #6b7280 !important;  /* placeholder visibile ma distinto dal testo reale */
 }
 
+html[data-theme="dark"] .bg-transparent {
+    background-color: transparent !important;
+}
+
 html[data-theme="dark"] .form-control:focus,
 html[data-theme="dark"] .form-select:focus {
     background-color: #303030 !important;  /* era #333 */
@@ -479,6 +486,11 @@ html[data-theme="dark"] .text-dark {
 
 html[data-theme="dark"] .text-muted {
     color: var(--text-muted) !important;
+}
+
+html[data-theme="dark"] .info-label {
+    color: #ffffff !important;
+    opacity: 0.85;
 }
 
 html[data-theme="dark"] .border,
@@ -523,4 +535,98 @@ html[data-theme="dark"] .nav-tabs .nav-link.active {
 .text-kpi-label {
   color: rgba(255, 255, 255, 0.65); /* grigio chiaro leggibile */
   letter-spacing: 0.5px;
+}
+
+/* Placeholder e icone Login */
+html[data-theme="dark"] ::placeholder {
+    color: #b5b5b5 !important;
+    opacity: 1 !important;
+}
+
+html[data-theme="dark"] .input-group-text.text-muted,
+html[data-theme="dark"] .input-group .text-muted {
+    color: #b5b5b5 !important;
+}
+
+/* Separazione Welcome Card Dashboard Cliente */
+html[data-theme="dark"] .customer-welcome-card {
+    background: linear-gradient(145deg, #242424 0%, #1e1e1e 100%) !important;
+    border-bottom: 1px solid #333333 !important;
+}
+
+/* Pillole Filtri Ordini disattivate in Dark Mode */
+html[data-theme="dark"] .filter-pill:not([class*="-active"]) {
+    background-color: transparent !important;
+    color: var(--text-muted) !important;
+}
+html[data-theme="dark"] .filter-pill:not([class*="-active"]) .filter-pill__badge {
+    opacity: 0.8;
+}
+
+/* Stepper Timeline Ordini (Passaggi futuri) */
+html[data-theme="dark"] .stepper .circle:not(.done):not(.active) {
+    background-color: #242424 !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
+/* =============================================
+   COLLAPSIBLE SIDEBAR
+   ============================================= */
+.app-sidebar {
+    transition: width 0.3s ease;
+}
+
+.app-sidebar.collapsed {
+    width: 85px;
+}
+
+.app-sidebar.collapsed .sidebar-brand-text,
+.app-sidebar.collapsed .sidebar-brand-subtext,
+.app-sidebar.collapsed .nav-text,
+.app-sidebar.collapsed .nav-link .bi-chevron-right,
+.app-sidebar.collapsed .nav-link .badge,
+.app-sidebar.collapsed .sidebar-profile .profile-details,
+.app-sidebar.collapsed .sidebar-profile .theme-toggle-btn,
+.app-sidebar.collapsed .sidebar-profile .logout-btn,
+.app-sidebar.collapsed #sidebarToggle {
+    display: none !important;
+}
+
+/* Centratura contenuti in modalità collassata */
+.app-sidebar.collapsed .nav-link {
+    justify-content: center !important;
+    padding-left: 0;
+    padding-right: 0;
+}
+.app-sidebar.collapsed .nav-link i.me-3 {
+    margin-right: 0 !important;
+    font-size: 1.3rem;
+}
+
+.app-sidebar.collapsed .sidebar-brand {
+    justify-content: center !important;
+    padding-left: 0;
+    padding-right: 0;
+}
+.app-sidebar.collapsed .brand-icon {
+    margin-right: 0 !important;
+    cursor: pointer; /* Indizio che si può cliccare per riaprire */
+    transition: transform 0.2s ease;
+}
+.app-sidebar.collapsed .brand-icon:hover {
+    transform: scale(1.1);
+}
+
+.app-sidebar.collapsed .sidebar-profile {
+    justify-content: center !important;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Bordi verticali più leggeri per tabella Aspetti Economici */
+html[data-theme="dark"] #economici-table td,
+html[data-theme="dark"] #economici-table th {
+    border-left-color: rgba(255,255,255,0.04) !important;
+    border-right-color: rgba(255,255,255,0.04) !important;
 }

@@ -138,34 +138,39 @@
         </div>
 
         <!-- Desktop Sidebar -->
-        <aside class="app-sidebar d-none d-md-flex">
-            <a asp-controller="Home" asp-action="Index" class="sidebar-brand d-flex align-items-center text-decoration-none">
-                <div class="brand-icon bg-primary text-white d-flex align-items-center justify-content-center rounded me-3" style="width: 42px; height: 42px; font-size: 1.25rem; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);">
-                    <i class="bi bi-box-seam"></i>
-                </div>
-                <div>
-                    <h5 class="fw-bold text-white mb-0" style="letter-spacing: 0.5px;">BoxManager</h5>
-                    <small class="text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px; font-weight: 600;">Gestionale Scatole</small>
-                </div>
-            </a>
+        <aside class="app-sidebar d-none d-md-flex" id="desktopSidebar">
+            <div class="sidebar-brand d-flex align-items-center justify-content-between text-decoration-none">
+                <a asp-controller="Home" asp-action="Index" class="d-flex align-items-center text-decoration-none flex-grow-1" style="overflow: hidden;">
+                    <div class="brand-icon bg-primary text-white d-flex align-items-center justify-content-center rounded me-3" style="width: 42px; height: 42px; font-size: 1.25rem; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);" onclick="if(document.getElementById('desktopSidebar').classList.contains('collapsed')) { document.getElementById('sidebarToggle').click(); event.preventDefault(); }">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-white mb-0 sidebar-brand-text" style="letter-spacing: 0.5px;">BoxManager</h5>
+                        <small class="text-muted text-uppercase sidebar-brand-subtext" style="font-size: 0.65rem; letter-spacing: 1px; font-weight: 600;">Gestionale Scatole</small>
+                    </div>
+                </a>
+                <button id="sidebarToggle" class="btn text-white-50 p-1 ms-1 hover-white shadow-none" title="Riduci menu">
+                    <i class="bi bi-layout-sidebar"></i>
+                </button>
+            </div>
             
             <div class="sidebar-nav">
                 @if (User?.Identity?.IsAuthenticated ?? false)
                 {
-                    <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                        <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                    <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() != "Settings" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                        <div class="d-flex align-items-center"><i class="bi bi-grid-fill me-3"></i><span class="nav-text">Dashboard</span></div>
                         <i class="bi bi-chevron-right small opacity-50"></i>
                     </a>
                     
                     if (User.IsInRole("Admin"))
                     {
                         <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
-                            <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                            <div class="d-flex align-items-center"><i class="bi bi-people-fill me-3"></i><span class="nav-text">Clienti</span></div>
                             <i class="bi bi-chevron-right small opacity-50"></i>
                         </a>
                     }
                     <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
-                        <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                        <div class="d-flex align-items-center"><i class="bi bi-cart-fill me-3"></i><span class="nav-text">Ordini</span></div>
                         <span class="d-flex align-items-center">
                             @if (pendingOrdersCount > 0)
                             {
@@ -174,19 +179,23 @@
                             <i class="bi bi-chevron-right small opacity-50"></i>
                         </span>
                     </a>
+                    <a class="nav-link d-flex align-items-center justify-content-between @(ViewContext.RouteData.Values["Action"]?.ToString() == "Settings" ? "active" : "")" asp-controller="Home" asp-action="Settings">
+                        <div class="d-flex align-items-center"><i class="bi bi-gear-fill me-3"></i><span class="nav-text">Impostazioni</span></div>
+                        <i class="bi bi-chevron-right small opacity-50"></i>
+                    </a>
                 }
                 else
                 {
                     <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50 mb-2" style="pointer-events: none;">
-                        <span><i class="bi bi-grid-fill me-3"></i>Dashboard</span>
+                        <div class="d-flex align-items-center"><i class="bi bi-grid-fill me-3"></i><span class="nav-text">Dashboard</span></div>
                         <i class="bi bi-chevron-right small opacity-30"></i>
                     </a>
                     <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50 mb-2" style="pointer-events: none;">
-                        <span><i class="bi bi-cart-fill me-3"></i>Ordini</span>
+                        <div class="d-flex align-items-center"><i class="bi bi-cart-fill me-3"></i><span class="nav-text">Ordini</span></div>
                         <i class="bi bi-chevron-right small opacity-30"></i>
                     </a>
                     <a class="nav-link d-flex align-items-center justify-content-between disabled opacity-50 mb-2" style="pointer-events: none;">
-                        <span><i class="bi bi-people-fill me-3"></i>Clienti</span>
+                        <div class="d-flex align-items-center"><i class="bi bi-people-fill me-3"></i><span class="nav-text">Clienti</span></div>
                         <i class="bi bi-chevron-right small opacity-30"></i>
                     </a>
                 }
@@ -195,33 +204,38 @@
             <div class="sidebar-profile">
                 @if (User?.Identity?.IsAuthenticated ?? false)
                 {
-                    <div class="avatar">@userInitials</div>
-                    <div class="flex-grow-1 overflow-hidden me-2">
+                    <div class="avatar" title="@User.Identity?.Name">@userInitials</div>
+                    <div class="flex-grow-1 overflow-hidden me-2 profile-details ms-2">
                         <div class="fw-bold text-white text-truncate" style="font-size: 0.85rem;" title="@User.Identity?.Name">@User.Identity?.Name</div>
                         <div class="text-muted" style="font-size: 0.75rem;">@userRoleDisplayName</div>
                     </div>
                     <a class="btn p-0 text-white-50 hover-white me-3 theme-toggle-btn" title="Cambia Tema">
                         <i class="bi bi-moon fs-5"></i>
                     </a>
-                    <a class="btn p-0 text-white-50 hover-white" asp-controller="Account" asp-action="Logout" title="Disconnetti">
+                    <a class="btn p-0 text-white-50 hover-white logout-btn" asp-controller="Account" asp-action="Logout" title="Disconnetti">
                         <i class="bi bi-box-arrow-left fs-5"></i>
                     </a>
                 }
                 else
                 {
                     <div class="avatar opacity-50 bg-secondary">--</div>
-                    <div>
+                    <div class="ms-2 profile-details">
                         <div class="fw-bold text-white opacity-50" style="font-size: 0.85rem;">Non Connesso</div>
                         <div class="text-muted opacity-50" style="font-size: 0.75rem;">Accedi per continuare</div>
                     </div>
-                    <div class="ms-auto">
-                        <a class="btn p-0 text-white-50 hover-white theme-toggle-btn" title="Cambia Tema">
+                    <div class="ms-auto theme-toggle-btn">
+                        <a class="btn p-0 text-white-50 hover-white" title="Cambia Tema">
                             <i class="bi bi-moon fs-5"></i>
                         </a>
                     </div>
                 }
             </div>
         </aside>
+        <script>
+            if (localStorage.getItem('sidebar_collapsed') === 'true') {
+                document.getElementById('desktopSidebar').classList.add('collapsed');
+            }
+        </script>
 
         <!-- Main Content Area -->
         <div class="main-content">
@@ -256,21 +270,51 @@
                         }
                     }
                 });
+                
+                // Sync settings page switch if present
+                var settingsToggle = document.getElementById('darkModeSwitch');
+                if (settingsToggle) {
+                    settingsToggle.checked = isDark;
+                }
             }
             updateIcons();
+            
+            function toggleTheme() {
+                if(document.documentElement.getAttribute('data-theme') === 'dark') {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+                updateIcons();
+            }
+
             toggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
-                    if(document.documentElement.getAttribute('data-theme') === 'dark') {
-                        document.documentElement.removeAttribute('data-theme');
-                        localStorage.setItem('theme', 'light');
-                    } else {
-                        document.documentElement.setAttribute('data-theme', 'dark');
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    updateIcons();
+                    toggleTheme();
                 });
             });
+
+            // Gestione pagina settings toggle
+            var settingsToggle = document.getElementById('darkModeSwitch');
+            if (settingsToggle) {
+                settingsToggle.addEventListener('change', function(e) {
+                    toggleTheme();
+                });
+            }
+
+            // Gestione Sidebar Toggle
+            var sidebarToggleBtn = document.getElementById('sidebarToggle');
+            var sidebar = document.getElementById('desktopSidebar');
+            if (sidebarToggleBtn && sidebar) {
+                sidebarToggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.toggle('collapsed');
+                    localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
+                });
+            }
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
