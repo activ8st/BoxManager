@@ -23,9 +23,19 @@
             </div>
 
             <div class="d-flex gap-2 align-items-center">
+                @if (Model.Status == BoxManager.Models.OrderStatus.Pending)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)" class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center">
+                        <i class="bi bi-pencil me-1"></i>Modifica
+                    </a>
+                    
+                    <button type="button" class="btn btn-danger d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                        <i class="bi bi-trash me-1"></i>Annulla
+                    </button>
+                }
+
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)" class="btn btn-outline-secondary me-2"><i class="bi bi-pencil me-1"></i>Modifica</a>
                     string? actionText = null;
                     BoxManager.Models.OrderStatus? actionStatus = null;
 
@@ -47,7 +57,7 @@
 
                     @if (actionText != null && actionStatus.HasValue)
                     {
-                        <button id="startProductionBtn" class="btn btn-primary" onclick="updateStatus('@actionStatus')">@actionText</button>
+                        <button id="startProductionBtn" class="btn btn-primary d-inline-flex align-items-center justify-content-center" onclick="updateStatus('@actionStatus')">@actionText</button>
                     }
                 }
             </div>
@@ -380,3 +390,23 @@
         }
     }
 </script>
+
+<!-- Cancel Order Modal -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger" id="cancelOrderModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Annullamento Ordine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Sei sicuro di voler annullare l'ordine <strong>@($"ORD-{Model.OrderDate:yyyy}-{Model.Id:D3}")</strong>?</p>
+                <p class="text-muted small mt-2">Questa operazione cambierà lo stato dell'ordine in "Annullato" e non è irreversibile senza l'intervento di un amministratore.</p>
+            </div>
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <button type="button" class="btn btn-danger" onclick="updateStatus('Cancelled')" data-bs-dismiss="modal">Conferma Annullamento</button>
+            </div>
+        </div>
+    </div>
+</div>

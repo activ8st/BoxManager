@@ -37,15 +37,24 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Cliente</label>
-                                <select asp-for="CustomerId" class="form-select" required>
-                                    <option value="">Seleziona un cliente...</option>
-                                    @foreach (var c in ViewBag.Customers)
-                                    {
-                                        <option value="@c.Id">@c.BusinessName</option>
-                                    }
-                                </select>
-                                <span asp-validation-for="CustomerId" class="text-danger small"></span>
+                                @if (User.IsInRole("Admin") && ViewBag.Customers != null)
+                                {
+                                    <label class="form-label">Cliente</label>
+                                    <select asp-for="CustomerId" class="form-select" required>
+                                        <option value="">Seleziona un cliente...</option>
+                                        @foreach (var c in ViewBag.Customers)
+                                        {
+                                            <option value="@c.Id">@c.BusinessName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CustomerId" class="text-danger small"></span>
+                                }
+                                else
+                                {
+                                    <label class="form-label">Cliente</label>
+                                    <input type="text" class="form-control" value="@Model.Customer?.BusinessName" disabled />
+                                    <input type="hidden" asp-for="CustomerId" />
+                                }
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Codice Scatola</label>
