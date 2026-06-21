@@ -3,7 +3,6 @@
     ViewData["Title"] = User.IsInRole("Customer") ? "Modifica Profilo" : "Modifica Cliente";
     var formAction = User.IsInRole("Customer") ? "EditProfile" : "Edit";
     var cancelUrl = User.IsInRole("Customer") ? Url.Action("Index", "Home") : Url.Action("Details", new { id = Model.Id });
-    var isCustomer = User.IsInRole("Customer");
 }
 
 <div class="container">
@@ -23,33 +22,19 @@
                     <div class="card-body">
                         <div class="row">
 
-                            <!-- Ragione Sociale: sola lettura per il cliente -->
+                            <!-- Ragione Sociale: sempre sola lettura -->
                             <div class="col-md-12 mb-3">
                                 <label asp-for="BusinessName" class="form-label">Ragione Sociale</label>
-                                @if (isCustomer)
-                                {
-                                    <input asp-for="BusinessName" class="form-control bg-light" disabled="disabled" />
-                                    <input type="hidden" asp-for="BusinessName" />
-                                }
-                                else
-                                {
-                                    <input asp-for="BusinessName" class="form-control" />
-                                }
+                                <input asp-for="BusinessName" class="form-control bg-light" disabled="disabled" />
+                                <input type="hidden" asp-for="BusinessName" />
                                 <span asp-validation-for="BusinessName" class="text-danger small"></span>
                             </div>
 
-                            <!-- P.IVA: sola lettura per il cliente -->
+                            <!-- P.IVA: sempre sola lettura -->
                             <div class="col-md-6 mb-3">
                                 <label asp-for="VatNumber" class="form-label">Partita IVA</label>
-                                @if (isCustomer)
-                                {
-                                    <input asp-for="VatNumber" class="form-control bg-light" disabled="disabled" />
-                                    <input type="hidden" asp-for="VatNumber" />
-                                }
-                                else
-                                {
-                                    <input asp-for="VatNumber" class="form-control" />
-                                }
+                                <input asp-for="VatNumber" class="form-control bg-light" disabled="disabled" />
+                                <input type="hidden" asp-for="VatNumber" />
                                 <span asp-validation-for="VatNumber" class="text-danger small"></span>
                             </div>
 
@@ -74,25 +59,18 @@
                                 <span asp-validation-for="Phone" class="text-danger small"></span>
                             </div>
 
-                            <!-- Indirizzo: modificabile -->
+                            <!-- Indirizzo: sempre sola lettura -->
                             <div class="col-md-12 mb-3">
                                 <label asp-for="Address" class="form-label">Indirizzo</label>
-                                <input asp-for="Address" class="form-control" />
+                                <input asp-for="Address" class="form-control bg-light" disabled="disabled" />
+                                <input type="hidden" asp-for="Address" />
                                 <span asp-validation-for="Address" class="text-danger small"></span>
                             </div>
 
-                            <!-- Note: sola lettura per il cliente -->
+                            <!-- Note: modificabile -->
                             <div class="col-md-12 mb-0">
                                 <label asp-for="Notes" class="form-label">Note</label>
-                                @if (isCustomer)
-                                {
-                                    <textarea asp-for="Notes" class="form-control bg-light" rows="3" disabled="disabled"></textarea>
-                                    <input type="hidden" asp-for="Notes" />
-                                }
-                                else
-                                {
-                                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-                                }
+                                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
                                 <span asp-validation-for="Notes" class="text-danger small"></span>
                             </div>
 

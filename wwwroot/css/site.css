@@ -627,12 +627,25 @@ html[data-theme="dark"] .stepper .circle:not(.done):not(.active) {
     justify-content: center !important;
     padding-left: 0;
     padding-right: 0;
+    padding: 1.5rem 0; /* Mantieni padding verticale */
 }
+
+.app-sidebar.collapsed .sidebar-brand > a {
+    justify-content: center !important;
+    flex-grow: 0 !important;  /* ← IMPORTANTE: previene lo stretching */
+    width: auto;
+}
+
 .app-sidebar.collapsed .brand-icon {
     margin-right: 0 !important;
-    cursor: pointer; /* Indizio che si può cliccare per riaprire */
+    margin-left: 0 !important;  /* ← Aggiunto per certezza */
+    cursor: pointer;
     transition: transform 0.2s ease;
 }
+.app-sidebar.collapsed .brand-icon:hover {
+    transform: scale(1.1);
+}
+
 .app-sidebar.collapsed .brand-icon:hover {
     transform: scale(1.1);
 }
