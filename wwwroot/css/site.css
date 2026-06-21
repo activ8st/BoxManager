@@ -338,6 +338,25 @@ html, body {
     color: #ffffff;
 }
 
+/* === Annullato — rosso === */
+.filter-pill--cancelled {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+.filter-pill__badge--cancelled {
+    background-color: #f8d7da;
+    color: #842029;
+}
+.filter-pill--cancelled-active {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #ffffff;
+}
+.filter-pill--cancelled-active .filter-pill__badge--cancelled {
+    background-color: rgba(255,255,255,0.25);
+    color: #ffffff;
+}
+
 /* =============================================
    STATUS BADGES — colonna Stato nella tabella
    (usati ovunque: tabelle admin, dashboard cliente, ecc.)

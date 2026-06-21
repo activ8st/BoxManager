@@ -59,6 +59,7 @@ namespace BoxManager.Controllers
             ViewBag.InProductionCount = allOrdersList.Count(o => o.Status == OrderStatus.InProduction);
             ViewBag.CompletedCount = allOrdersList.Count(o => o.Status == OrderStatus.Completed);
             ViewBag.DeliveredCount = allOrdersList.Count(o => o.Status == OrderStatus.Delivered);
+            ViewBag.CancelledCount = allOrdersList.Count(o => o.Status == OrderStatus.Cancelled);
             ViewBag.TotalSpent = allOrdersList.Where(o => o.Status == OrderStatus.Completed || o.Status == OrderStatus.Delivered).Sum(o => o.TotalPrice);
 
             var filteredOrders = baseOrders;

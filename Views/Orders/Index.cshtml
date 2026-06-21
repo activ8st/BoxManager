@@ -36,6 +36,10 @@
         Consegnato
         <span class="filter-pill__badge filter-pill__badge--delivered">@ViewBag.DeliveredCount</span>
     </a>
+    <a class="filter-pill @(currentStatusFilter == "Cancelled" ? "filter-pill--active filter-pill--cancelled-active" : "filter-pill--cancelled")" href="/Orders?statusFilter=Cancelled">
+        Annullato
+        <span class="filter-pill__badge filter-pill__badge--cancelled">@ViewBag.CancelledCount</span>
+    </a>
 </div>
 
 <div class="card shadow-sm border-0 rounded-3" id="ordersApp">
