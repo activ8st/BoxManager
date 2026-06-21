@@ -307,11 +307,26 @@ namespace BoxManager.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> UpdateStatus(int id, OrderStatus status)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null) return NotFound();
+
+            if (!User.IsInRole("Admin"))
+            {
+                var customerIdClaim = User.FindFirst("CustomerId")?.Value;
+                if (customerIdClaim == null || !int.TryParse(customerIdClaim, out int customerId) || order.CustomerId != customerId)
+                {
+                    return Forbid();
+                }
+                
+                if (status != OrderStatus.Cancelled)
+                {
+                    return Forbid();
+                }
+            }
+
             order.Status = status;
             await _context.SaveChangesAsync();
             await _hubContext.Clients.All.SendAsync("ReceiveStatusUpdate", id, status.ToString());
